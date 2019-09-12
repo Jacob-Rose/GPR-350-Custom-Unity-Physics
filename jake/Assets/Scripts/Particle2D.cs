@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Particle2D : MonoBehaviour
 {
+    public float startMass;
+    public float dampening = 0.8f;
     public Vector2 position;
     public float rotation;
     public float angularVelocity;
@@ -11,15 +13,18 @@ public class Particle2D : MonoBehaviour
     public Vector2 velocity;
     public Vector2 acceleration;
     public PhysicsType calculationType;
-    public PathType pathType;
+
+    private Vector2 force;
+
     public int physicsIterations = 2;
-    private float startTime; //used to randomize(not all objects in sync)
-    public enum PathType
+
+    public float Mass
     {
-        Circle,
-        LineSin,
-        None
+        set { invMass = value > 0.0f ? 1.0f /value: 0.0f; }
+        get { return 1 / invMass; }
     }
+    private float invMass;
+    private float startTime;
     public enum PhysicsType
     {
         Kinematic,
@@ -29,6 +34,7 @@ public class Particle2D : MonoBehaviour
     void Start()
     {
         startTime = Time.time;
+        Mass = startMass;
     }
 
     // Start is called before the first frame update
@@ -57,7 +63,22 @@ public class Particle2D : MonoBehaviour
         angularVelocity += angularAcceleration * deltaTime;
     }
 
-    void FixedUpdate()
+    public void addForce(Vector2 newForce)
+    {
+        force += newForce;
+    }
+
+    public Vector2 getVelocity()
+    {
+        return velocity;
+    }
+
+    private void calculateAcceleration()
+    {
+        acceleration = force * invMass * dampening;
+        force.Set(0.0f, 0.0f);
+    }
+    protected void FixedUpdate()
     {
         //calculation type
         float fractionTime = Time.fixedDeltaTime / physicsIterations;
@@ -75,17 +96,7 @@ public class Particle2D : MonoBehaviour
             }
         }
         //acceleration stuff
-        if(pathType == PathType.Circle)
-        {
-            //use velocity to ensure proper circle
-            acceleration.x = Mathf.Sin(Time.fixedTime - startTime);
-            acceleration.y = Mathf.Cos(Time.fixedTime - startTime);
-        }
-        else if(pathType == PathType.LineSin)
-        {
-            //same as circle but only on X
-            acceleration.x = Mathf.Sin(Time.fixedTime - startTime);
-        }
+        calculateAcceleration();
         transform.position = position;
         transform.eulerAngles = new Vector3(0, 0, rotation);
     }
