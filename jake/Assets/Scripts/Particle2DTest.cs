@@ -14,8 +14,12 @@ public class Particle2DTest : MonoBehaviour
         StaticFriction,
         KineticFriction,
         Drag,
-        Spring
+        Spring,
+        Torque
     }
+
+    public Vector2 variable1; //surface norm for some, point of force adding for torque
+    public Vector2 variable2; //force used for torque equation
     public void FixedUpdate()
     {
         Particle2D comp = GetComponent<Particle2D>();
@@ -25,25 +29,21 @@ public class Particle2DTest : MonoBehaviour
         }
         else if (testType == TestType.Normal)
         {
-            Vector2 surfNorm = new Vector2(0.0f, 1.0f);
-            comp.addForce(ForceGenerator2D.GenerateForce_Normal(new Vector2(0.0f, -9.81f), surfNorm));
+            comp.addForce(ForceGenerator2D.GenerateForce_Normal(new Vector2(0.0f, -9.81f), variable1));
         }
         else if (testType == TestType.Sliding)
         {
-            Vector2 surf = new Vector2(4.0f, 1.0f);
-            comp.addForce(ForceGenerator2D.GenerateForce_Sliding(new Vector2(0.0f, -9.81f), surf));
+            comp.addForce(ForceGenerator2D.GenerateForce_Sliding(new Vector2(0.0f, -9.81f), variable1));
         }
         else if (testType == TestType.StaticFriction)
         {
-            Vector2 surf = new Vector2(4.0f, 1.0f);
-            comp.addForce(ForceGenerator2D.GenerateForce_Sliding(new Vector2(0.0f, -9.81f), surf));
-            comp.addForce(ForceGenerator2D.GenerateForce_Friction_Static(surf, -surf, 0.8f));
+            comp.addForce(ForceGenerator2D.GenerateForce_Sliding(new Vector2(0.0f, -9.81f), variable1));
+            comp.addForce(ForceGenerator2D.GenerateForce_Friction_Static(variable1, -variable1, 0.8f));
         }
         else if (testType == TestType.KineticFriction)
         {
-            Vector2 surf = new Vector2(4.0f, 1.0f);
-            comp.addForce(ForceGenerator2D.GenerateForce_Sliding(new Vector2(0.0f, -9.81f), surf));
-            comp.addForce(ForceGenerator2D.GenerateForce_Friction_Kinetic(surf, comp.getVelocity(), 0.8f));
+            comp.addForce(ForceGenerator2D.GenerateForce_Sliding(new Vector2(0.0f, -9.81f), variable1));
+            comp.addForce(ForceGenerator2D.GenerateForce_Friction_Kinetic(variable1, comp.getVelocity(), 0.8f));
         }
         else if (testType == TestType.Drag)
         {
@@ -55,7 +55,11 @@ public class Particle2DTest : MonoBehaviour
         {
             //gravity for testing also applied
             comp.addForce(ForceGenerator2D.GenerateForce_Gravity(comp.Mass, -9.81f, Vector2.up));
-            comp.addForce(ForceGenerator2D.GenerateForce_Spring(comp.position, Vector2.zero, 2.0f, 100.0f));
+            comp.addForce(ForceGenerator2D.GenerateForce_Spring(comp.position, Vector2.zero, -4.0f, 10.0f));
+        }
+        else if (testType == TestType.Torque)
+        {
+            comp.addForceAtPoint(variable1, variable2);
         }
     }
 }

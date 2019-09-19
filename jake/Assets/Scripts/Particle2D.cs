@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Particle2D : MonoBehaviour
 {
-    public float startMass;
+    public float startMass = 10.0f; 
     public float dampening = 0.8f;
     public Vector2 position;
     public float rotation;
@@ -13,28 +14,72 @@ public class Particle2D : MonoBehaviour
     public Vector2 velocity;
     public Vector2 acceleration;
     public PhysicsType calculationType;
-
+    public ShapeType shapeType;
+    [Tooltip("Circle = Radius, Ring = OuterRadius, Rectangle = XLength, Line = length")]
+    public float inertiaVar1;
+    [Tooltip("Circle = ignore, Ring = inner radius, Rectangle = YLength, line = ignore")]
+    public float inertiaVar2;
     private Vector2 force;
+    public bool shouldForceAtPointMove = true;
 
     public int physicsIterations = 2;
-
     public float Mass
     {
-        set { invMass = value > 0.0f ? 1.0f /value: 0.0f; }
+        set { invMass = value > 0.0f ? 1.0f / value : 0.0f; }
         get { return 1 / invMass; }
     }
+
     private float invMass;
     private float startTime;
+    private float torque;
+    private float inertia;
     public enum PhysicsType
     {
         Kinematic,
         Euler
     }
 
+    public enum ShapeType
+    {
+        Circle,
+        Ring,
+        Rectangle,
+        Line
+    }
+
     void Start()
     {
         startTime = Time.time;
         Mass = startMass;
+        inertia = calculateInertia();
+        position = transform.position;
+    }
+
+    private float calculateInertia()
+    {
+        if(shapeType == ShapeType.Circle)
+        {
+            return 0.5f * Mass * inertiaVar1 * inertiaVar1; //var1 is radius set by user
+        }
+        else if(shapeType == ShapeType.Rectangle)
+        {
+            return 0.0833f * Mass * ((inertiaVar1 * inertiaVar1) + (inertiaVar2 * inertiaVar2));
+        }
+        else if(shapeType == ShapeType.Ring)
+        {
+            return 0.5f * Mass * ((inertiaVar1 * inertiaVar1) + (inertiaVar2 * inertiaVar2));
+        }
+        else if(shapeType == ShapeType.Line)
+        {
+            return 0.0833f * Mass * (inertiaVar1 * inertiaVar1);
+        }
+        throw new System.DivideByZeroException();
+    }
+
+    void updateAngularAcceleration()
+    {
+        angularAcceleration = (torque / inertia);
+        torque = 0.0f;
     }
 
     // Start is called before the first frame update
@@ -68,6 +113,17 @@ public class Particle2D : MonoBehaviour
         force += newForce;
     }
 
+    //point is relative to center
+    public void addForceAtPoint(Vector2 pointRelativeToCenter, Vector2 force)
+    {
+        Vector3 dir = new Vector3(pointRelativeToCenter.x, pointRelativeToCenter.y, 0.0f);
+        Vector3 forcePos = new Vector3(force.x, force.y, 0.0f);
+        Debug.DrawLine(transform.position + dir, transform.position + dir + forcePos, Color.magenta, 0.1f);
+        torque += pointRelativeToCenter.x * force.y - pointRelativeToCenter.y * force.x;
+        if(shouldForceAtPointMove)
+            addForce(force);
+    }
+
     public Vector2 getVelocity()
     {
         return velocity;
@@ -95,8 +151,10 @@ public class Particle2D : MonoBehaviour
                 updateRotationEulerExplicit(fractionTime);
             }
         }
+        updateAngularAcceleration();
         //acceleration stuff
         calculateAcceleration();
+
         transform.position = position;
         transform.eulerAngles = new Vector3(0, 0, rotation);
     }
