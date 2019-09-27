@@ -47,12 +47,12 @@ public class Particle2D : MonoBehaviour
         Line
     }
 
-    void Start()
+    public virtual void Start()
     {
         startTime = Time.time;
         Mass = startMass;
         inertia = calculateInertia();
-        position = transform.position;
+        position = transform.position + new Vector3(position.x, position.y, 0);
     }
 
     private float calculateInertia()
@@ -156,6 +156,6 @@ public class Particle2D : MonoBehaviour
         calculateAcceleration();
 
         transform.position = position;
-        transform.eulerAngles = new Vector3(0, 0, rotation);
+        transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 }
