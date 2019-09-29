@@ -18,19 +18,19 @@ public class OBBHull : CollisionHull2D
 
     public Vector2 getBottomLeftPos()
     {
-        return Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(position.x - halfLength.x, position.y - halfLength.y);
+        return (Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(-halfLength.x, -halfLength.y)) + new Vector3(position.x, position.y);
     }
     public Vector2 getBottomRightPos()
     {
-        return Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(position.x + halfLength.x, position.y - halfLength.y);
+        return (Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(halfLength.x,-halfLength.y)) + new Vector3(position.x, position.y);
     }
     public Vector2 getTopLeftPos()
     {
-        return Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(position.x - halfLength.x, position.y + halfLength.y);
+        return (Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(-halfLength.x,halfLength.y)) + new Vector3(position.x, position.y);
     }
     public Vector2 getTopRightPos()
     {
-        return Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(position.x + halfLength.x, position.y + halfLength.y);
+        return (Quaternion.Euler(0, 0, boundingBoxRotation) * new Vector3(halfLength.x,halfLength.y)) + new Vector3(position.x, position.y);
     }
 
     public void OnDrawGizmos()

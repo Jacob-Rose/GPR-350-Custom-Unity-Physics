@@ -12,18 +12,25 @@ public abstract class CollisionHull2D : Particle2D
     }
     public abstract bool detectCollision(CollisionHull2D other);
 
+    /*
+     * VERIFIED WORKING
+     */
     public static bool detectCollision(CircleHull2D lft, CircleHull2D rgt)
     {
-        //VERIFIED WORKING
         return lft.radius + rgt.radius >= Vector2.Distance(lft.position, rgt.position);
     }
 
-    public static bool detectCollision(CircleHull2D lft, AABBHull rgt)
+    /*
+     * VERIFIED WORKING
+     */
+    public static bool detectCollision(CircleHull2D circle, AABBHull square)
     {
-        float closestPointX = Mathf.Max(rgt.position.x, Mathf.Min(lft.position.x, rgt.position.x + rgt.halfLength.x));
-        float closestPointY = Mathf.Max(rgt.position.y, Mathf.Min(lft.position.y, rgt.position.y + rgt.halfLength.y));
+        float closestPointX = Mathf.Max(square.position.x - square.halfLength.x, Mathf.Min(circle.position.x, square.position.x + square.halfLength.x));
+        float closestPointY = Mathf.Max(square.position.y - square.halfLength.y, Mathf.Min(circle.position.y, square.position.y + square.halfLength.y));
+        
         Vector2 closestPoint = new Vector2(closestPointX, closestPointY);
-        return lft.radius + Vector2.Distance(closestPoint, rgt.position) > Vector2.Distance(lft.position, rgt.position);
+        Debug.DrawLine(new Vector3(closestPointX, closestPointY, 0), circle.position);
+        return circle.radius + Vector2.Distance(closestPoint, square.position) > Vector2.Distance(circle.position, square.position);
     }
 
     public static bool detectCollision(CircleHull2D lft, OBBHull rgt)
@@ -33,11 +40,40 @@ public abstract class CollisionHull2D : Particle2D
         return false;
     }
 
-    public static bool detectCollision(AABBHull lft, AABBHull rgt)
+    /*
+     * VERIFIED WORKING
+     */
+    public static bool detectCollision(AABBHull a, AABBHull b)
     {
-        //VERIFIED WORKING
-        return lft.position.x + lft.halfLength.x > rgt.position.x - rgt.halfLength.x && 
-            lft.position.y + lft.halfLength.y > rgt.position.y - rgt.halfLength.y;
+        for(int i = 0; i < 2; i++) //do for each axis
+        {
+            Vector2 minMaxA = new Vector2(a.position[i] - a.halfLength[i], a.position[i] + a.halfLength[i]);
+            Vector2 minMaxB = new Vector2(b.position[i] - b.halfLength[i], b.position[i] + b.halfLength[i]);
+            if (!detectCollisionFromMinMax(minMaxA,minMaxB))
+            {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    public static bool detectCollisionFromMinMax(Vector2 aMinMax, Vector2 bMinMax)
+    {
+        if (aMinMax.x > bMinMax.x)
+        {
+            if (aMinMax.x < bMinMax.y)
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            if (bMinMax.x < aMinMax.y)
+                return true;
+            else
+                return false;
+        }
     }
 
     public static bool detectCollision(AABBHull lft, OBBHull rgt)
@@ -47,33 +83,31 @@ public abstract class CollisionHull2D : Particle2D
 
     public static bool detectCollision(OBBHull lft, OBBHull rgt)
     {
-        //close, doesnt work on Y axis
-        return checkAxis(lft.getXNormal(), rgt, lft) && checkAxis(lft.getYNormal(), rgt, lft);
+        //check each axis on each side, need to make better
+        return checkAxis(lft, rgt, lft.getXNormal()) && checkAxis(lft, rgt, lft.getYNormal()) && checkAxis(lft, rgt, rgt.getXNormal()) && checkAxis(lft, rgt, rgt.getYNormal());
     }
 
-    public static bool checkAxis(Vector2 norm, OBBHull other, OBBHull me)
+    public static bool checkAxis(OBBHull a, OBBHull b, Vector2 norm)
     {
-        Vector4 minMaxOther = getMaxAndMinFromProj(norm, other);
-        Vector4 minMaxMe = getMaxAndMinFromProj(norm, me);
-        Vector2 minMe = new Vector2(minMaxMe.x, minMaxMe.y);
-        Vector2 maxOther = new Vector2(minMaxOther.z, minMaxOther.w);
-        Debug.DrawLine(new Vector3(minMaxOther.x, minMaxOther.y, 0), new Vector3(minMaxOther.z, minMaxOther.w), Color.blue, 0.1f);
-        Debug.DrawLine(new Vector3(minMaxMe.x, minMaxMe.y, 0), new Vector3(minMaxMe.z, minMaxMe.w), Color.red, 0.1f);
-        return minMe.x > maxOther.x && minMe.y > maxOther.y;
+        Vector4 aProjValues = getProjectionValuesOnNorm(a, norm);
+        Vector4 bProjValues = getProjectionValuesOnNorm(b, norm);
+        float aMin = Mathf.Min(new float[] { aProjValues.x, aProjValues.y, aProjValues.z, aProjValues.w });
+        float aMax = Mathf.Max(new float[] { aProjValues.x, aProjValues.y, aProjValues.z, aProjValues.w });
+        float bMin = Mathf.Min(new float[] { bProjValues.x, bProjValues.y, bProjValues.z, bProjValues.w });
+        float bMax = Mathf.Max(new float[] { bProjValues.x, bProjValues.y, bProjValues.z, bProjValues.w });
+        Debug.DrawLine(aMin * norm, aMax * norm, Color.blue, 0.1f); //this is dumb useful, the projected line
+        Debug.DrawLine(bMin * norm, bMax * norm, Color.red, 0.1f);//this is dumb useful, the projected line
+        return detectCollisionFromMinMax(new Vector2(aMin, aMax), new Vector2(bMin, bMax));
     }
-
-    public static Vector4 getMaxAndMinFromProj(Vector2 norm, OBBHull box)
+    public static Vector4 getProjectionValuesOnNorm(OBBHull box, Vector2 norm)
     {
-        Vector2 projTL = proj(box.getTopLeftPos(), norm);
-        Vector2 projTR = proj(box.getTopRightPos(), norm);
-        Vector2 projBL = proj(box.getBottomLeftPos(), norm);
-        Vector2 projBR = proj(box.getBottomRightPos(), norm);
-        float maxXother = Mathf.Max(new float[] { projTL.x, projTR.x, projBL.x, projBR.x });
-        float maxYother = Mathf.Max(new float[] { projTL.y, projTR.y, projBL.y, projBR.y });
-        float minXother = Mathf.Min(new float[] { projTL.x, projTR.x, projBL.x, projBR.x });
-        float minYother = Mathf.Min(new float[] { projTL.y, projTR.y, projBL.y, projBR.y });
-
-        return new Vector4(maxXother, maxYother, minXother, minYother);
+        float a, b, c, d;
+        int axis = norm.x != 0 ? 0 : 1; //just to make a scaler, but in case the x axis is zero, and if they are both zero then what the hell u doing with a normal (0,0)
+        a = proj(box.getTopLeftPos(), norm)[axis] / norm[axis];
+        b = proj(box.getTopRightPos(), norm)[axis] / norm[axis];
+        c = proj(box.getBottomLeftPos(), norm)[axis] / norm[axis];
+        d = proj(box.getBottomRightPos(), norm)[axis] / norm[axis];
+        return new Vector4(a, b, c, d);
     }
 
     public static Vector2 proj(Vector2 point, Vector2 normal)

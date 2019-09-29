@@ -26,7 +26,7 @@ public class PhysicsWorld : MonoBehaviour
     {
         for(int i =0; i < mPhysicsObjects.Count; i++)
         {
-            for(int j = 1; j < mPhysicsObjects.Count; j++)
+            for(int j = 0; j < mPhysicsObjects.Count; j++)
             {
                 if (i != j && mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]))
                 {
