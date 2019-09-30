@@ -35,9 +35,16 @@ public abstract class CollisionHull2D : Particle2D
 
     public static bool detectCollision(CircleHull2D lft, OBBHull rgt)
     {
-        //float closestPointX = Mathf.Max(rgt.position.x, Mathf.Min(lft.position.x, rgt.position.x + rgt.halfLength.x));
-        //float closestPointY = Mathf.Max(rgt.position.y, Mathf.Min(lft.position.y, rgt.position.y + rgt.halfLength.y));
-        return false;
+        Vector2 lftNorm = (lft.position - rgt.position).normalized;
+        Vector2 oppositeNorm = Quaternion.Euler(0, 0, 90) * lftNorm;
+        Vector4 projValues = getProjectionValuesOnNorm(rgt, lftNorm);
+        float minR = Mathf.Min(new float[] { projValues.x, projValues.y, projValues.z, projValues.w });
+        float maxR = Mathf.Max(new float[] { projValues.x, projValues.y, projValues.z, projValues.w });
+        bool x = detectCollisionFromMinMax(new Vector2(minR, maxR), getProjectionValuesOnNorm(lft, lftNorm));
+        projValues = getProjectionValuesOnNorm(rgt, oppositeNorm);
+        minR = Mathf.Min(new float[] { projValues.x, projValues.y, projValues.z, projValues.w });
+        maxR = Mathf.Max(new float[] { projValues.x, projValues.y, projValues.z, projValues.w });
+        return x && detectCollisionFromMinMax(new Vector2(minR, maxR), getProjectionValuesOnNorm(lft, oppositeNorm));
     }
 
     /*
@@ -81,6 +88,9 @@ public abstract class CollisionHull2D : Particle2D
         return false;//checkAxis(new Vector2(1,0), )
     }
 
+    /*
+     * Verified Working, possible error in using 4 checkaxis, i think i missed a check somewhere deeper in the code
+     */
     public static bool detectCollision(OBBHull lft, OBBHull rgt)
     {
         //check each axis on each side, need to make better
@@ -97,6 +107,7 @@ public abstract class CollisionHull2D : Particle2D
         float bMax = Mathf.Max(new float[] { bProjValues.x, bProjValues.y, bProjValues.z, bProjValues.w });
         Debug.DrawLine(aMin * norm, aMax * norm, Color.blue, 0.1f); //this is dumb useful, the projected line
         Debug.DrawLine(bMin * norm, bMax * norm, Color.red, 0.1f);//this is dumb useful, the projected line
+
         return detectCollisionFromMinMax(new Vector2(aMin, aMax), new Vector2(bMin, bMax));
     }
     public static Vector4 getProjectionValuesOnNorm(OBBHull box, Vector2 norm)
@@ -108,6 +119,15 @@ public abstract class CollisionHull2D : Particle2D
         c = proj(box.getBottomLeftPos(), norm)[axis] / norm[axis];
         d = proj(box.getBottomRightPos(), norm)[axis] / norm[axis];
         return new Vector4(a, b, c, d);
+    }
+
+    public static Vector2 getProjectionValuesOnNorm(CircleHull2D circle, Vector2 norm)
+    {
+        float a, b, c, d;
+        int axis = norm.x != 0 ? 0 : 1; //just to make a scaler, but in case the x axis is zero, and if they are both zero then what the hell u doing with a normal (0,0)
+        a = proj(circle.position, norm)[axis] - circle.radius/ norm[axis];
+        b = proj(circle.position, norm)[axis] + circle.radius / norm[axis];
+        return new Vector2(a, b);
     }
 
     public static Vector2 proj(Vector2 point, Vector2 normal)
