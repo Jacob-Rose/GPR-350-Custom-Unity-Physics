@@ -30,7 +30,7 @@ public abstract class CollisionHull2D : Particle2D
 
         Vector2 closestPoint = new Vector2(closestPointX, closestPointY);
         Debug.DrawLine(new Vector3(closestPointX, closestPointY, 0), circle.position);
-        return circle.radius + Vector2.Distance(closestPoint, square.position) > Vector2.Distance(circle.position, square.position);
+        return circle.radius > Vector2.Distance(circle.position, closestPoint);
     }
 
     public static bool detectCollision(CircleHull2D circle, OBBHull2D square)
