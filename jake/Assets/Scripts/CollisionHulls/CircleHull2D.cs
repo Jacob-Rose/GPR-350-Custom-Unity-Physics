@@ -20,7 +20,8 @@ public class CircleHull2D : CollisionHull2D
         }
     }
 
-    public override bool detectCollision(CollisionHull2D other)
+
+    public override HullCollision2D detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)
         {

@@ -22,11 +22,18 @@ public class Particle2D : MonoBehaviour
     private Vector2 force;
     public bool shouldForceAtPointMove = true;
 
+    public float restitution = 0.5f;
+
     public int physicsIterations = 2;
     public float Mass
     {
         set { invMass = value > 0.0f ? 1.0f / value : 0.0f; }
         get { return 1 / invMass; }
+    }
+
+    public float InverseMass
+    {
+        get { return invMass; }
     }
 
     private float invMass;
@@ -127,6 +134,11 @@ public class Particle2D : MonoBehaviour
     public Vector2 getVelocity()
     {
         return velocity;
+    }
+
+    public void setVelocity(Vector2 velocity)
+    {
+        this.velocity = velocity;
     }
 
     private void calculateAcceleration()

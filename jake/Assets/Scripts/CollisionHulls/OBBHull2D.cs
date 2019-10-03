@@ -71,7 +71,7 @@ public class OBBHull2D : CollisionHull2D
         return position + distanceX * getXNormal() + distanceY * getYNormal();
     }
 
-    public override bool detectCollision(CollisionHull2D other)
+    public override HullCollision2D detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)
         {

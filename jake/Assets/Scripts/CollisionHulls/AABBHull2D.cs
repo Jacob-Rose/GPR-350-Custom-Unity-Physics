@@ -14,7 +14,7 @@ public class AABBHull2D : CollisionHull2D
         Gizmos.DrawLine(position + new Vector2(-halfLength.x, halfLength.y), position + halfLength);
     }
 
-    public override bool detectCollision(CollisionHull2D other)
+    public override HullCollision2D detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)
         {
