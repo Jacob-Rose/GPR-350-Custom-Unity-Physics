@@ -28,8 +28,8 @@ public class PhysicsWorld : MonoBehaviour
         {
             for(int j = 0; j < mPhysicsObjects.Count; j++)
             {
-                HullCollision2D coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
-                if (i != j && coll != null)
+                bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
+                if (i != j && coll)
                 {
                     Debug.Log("Collision Happened");
                 }

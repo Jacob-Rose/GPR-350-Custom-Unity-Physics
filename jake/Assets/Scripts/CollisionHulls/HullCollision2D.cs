@@ -14,19 +14,15 @@ public class HullCollision2D
     public CollisionHull2D b;
     public struct CollContact2D
     {
-        public CollContact2D(CollisionHull2D a, CollisionHull2D b, Vector2 point, Vector2 penetrationNorm)
+        public CollContact2D(CollisionHull2D a, CollisionHull2D b, Vector2 penetrationNorm)
         {
             hullA = a;
             hullB = b;
-            norm = (a.position - b.position).normalized;
-            this.point = point;
             this.penetrationNorm = a.velocity - b.velocity;
             restitution = (hullA.restitution+ hullB.restitution)/2.0f; //average
         }
         public CollisionHull2D hullA;
         public CollisionHull2D hullB;
-        public Vector2 point;
-        public Vector2 norm;
         public float restitution;
         public Vector2 penetrationNorm;
 
@@ -40,7 +36,7 @@ public class HullCollision2D
         {
             Vector2 relativeVelocity = hullA.getVelocity();
             relativeVelocity -= hullB.getVelocity();
-            return relativeVelocity * norm;
+            return relativeVelocity * penetrationNorm;
         }
 
         private void ResolveVelocity(float duration)
@@ -79,7 +75,7 @@ public class HullCollision2D
                 return; //dont do anything, they cannot move
             }
 
-            Vector2 movePerMass = norm * (penetrationNorm.magnitude / totalInverseMass);
+            Vector2 movePerMass = penetrationNorm * (penetrationNorm.magnitude / totalInverseMass);
 
             Vector2 hullAMovement = movePerMass * hullA.InverseMass;
             Vector2 hullBMovement = movePerMass * hullB.InverseMass;

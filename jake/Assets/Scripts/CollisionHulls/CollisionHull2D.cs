@@ -10,29 +10,42 @@ public abstract class CollisionHull2D : Particle2D
         PhysicsWorld.instance.addObject(this);
         
     }
-    public abstract HullCollision2D detectCollision(CollisionHull2D other);
+    public abstract bool detectCollision(CollisionHull2D other);
+    public abstract HullCollision2D detectCollisionResponse(CollisionHull2D other);
 
     /*
-     * VERIFIED WORKING
+     * Circle V Circle
      */
-    public static HullCollision2D detectCollision(CircleHull2D lft, CircleHull2D rgt)
+    public static bool detectCollision(CircleHull2D a, CircleHull2D b)
     {
-        if(lft.radius + rgt.radius >= Vector2.Distance(lft.position, rgt.position))
+        if(a.radius + b.radius >= Vector2.Distance(a.position, b.position))
         {
-            HullCollision2D collision = new HullCollision2D(lft, rgt);
+            return true;
+        }
+        return false;//failed
+    }
+    public static HullCollision2D detectCollisionResponse(CircleHull2D a, CircleHull2D b)
+    {
+        if (a.radius + b.radius >= Vector2.Distance(a.position, b.position))
+        {
+            HullCollision2D collision = new HullCollision2D(a, b);
             //collision.closingVelocity = -(lft.velocity - rgt.velocity) *(lft.velocity - rgt.velocity).normalized;
             collision.contactPoints = new HullCollision2D.CollContact2D[0];
-            //collision.contactPoints[0] = new HullCollision2D.CollContact2D(a,b,new Vector2());
-            //collision.contactPoints[1] = new HullCollision2D.CollContact2D();
+            Vector2 dir = a.position - b.position;
+            dir.Normalize();
+            dir *= (a.radius + b.radius) - Vector2.Distance(a.position, b.position);
+            Debug.DrawRay(a.position, dir);
+            collision.contactPoints[0] = new HullCollision2D.CollContact2D(a, b, dir);
             return collision;
         }
         return null;//failed
     }
 
+
     /*
-     * VERIFIED WORKING
+     * Circle V AABB
      */
-    public static HullCollision2D detectCollision(CircleHull2D circle, AABBHull2D square)
+    public static bool detectCollision(CircleHull2D circle, AABBHull2D square)
     {
         float closestPointX = Mathf.Clamp(circle.position.x, square.position.x - square.halfLength.x, square.position.x + square.halfLength.x);
         float closestPointY = Mathf.Clamp(circle.position.y, square.position.y - square.halfLength.y, square.position.y + square.halfLength.y);
@@ -41,18 +54,57 @@ public abstract class CollisionHull2D : Particle2D
         Debug.DrawLine(new Vector3(closestPointX, closestPointY, 0), circle.position);
         if(circle.radius > Vector2.Distance(circle.position, closestPoint))
         {
-            HullCollision2D collision = new HullCollision2D(circle,square);
-            collision.contactPoints = new HullCollision2D.CollContact2D[0];
+            return true;
+        }
+        return false;
+    }
+    public static HullCollision2D detectCollisionResponse(CircleHull2D circle, AABBHull2D square)
+    {
+        float closestPointX = Mathf.Clamp(circle.position.x, square.position.x - square.halfLength.x, square.position.x + square.halfLength.x);
+        float closestPointY = Mathf.Clamp(circle.position.y, square.position.y - square.halfLength.y, square.position.y + square.halfLength.y);
+
+        Vector2 closestPoint = new Vector2(closestPointX, closestPointY);
+        Debug.DrawLine(new Vector3(closestPointX, closestPointY, 0), circle.position);
+        float dist = Vector2.Distance(circle.position, closestPoint);
+        if (circle.radius > dist)
+        {
+            HullCollision2D collision = new HullCollision2D(circle, square);
+            collision.contactPoints = new HullCollision2D.CollContact2D[1];
+            Vector2 penNorm = Vector2.zero;
+            for (int i = 0; i < 2; i++)//for each axis
+            {
+                //check if within axis bounds
+                if(Mathf.Clamp(circle.position[i], square.position[i] - square.halfLength[i], square.position[i] + square.halfLength[i]) != circle.position[i] )
+                {
+
+                    penNorm[i] = circle.radius - Vector2.Distance(circle.position, closestPoint);
+                }
+            }
+            collision.contactPoints[0] = new HullCollision2D.CollContact2D(circle, square, penNorm);
             return collision;
         }
         return null;
     }
 
-    public static HullCollision2D detectCollision(CircleHull2D circle, OBBHull2D square)
+    /*
+     * Circle V OBB
+     */
+    public static bool detectCollision(CircleHull2D circle, OBBHull2D square)
     {
         Vector2 closestPoint = square.ClosestPointTo(circle.position);
         Debug.DrawLine(new Vector3(closestPoint.x, closestPoint.y, 0), circle.position);
         if( circle.radius > Vector2.Distance(circle.position, closestPoint))
+        {
+            return true;
+        }
+        return false;
+    }
+    //TODO
+    public static HullCollision2D detectCollisionResponse(CircleHull2D circle, OBBHull2D square)
+    {
+        Vector2 closestPoint = square.ClosestPointTo(circle.position);
+        Debug.DrawLine(new Vector3(closestPoint.x, closestPoint.y, 0), circle.position);
+        if (circle.radius > Vector2.Distance(circle.position, closestPoint))
         {
             HullCollision2D collision = new HullCollision2D(circle, square);
             collision.contactPoints = new HullCollision2D.CollContact2D[0];
@@ -62,9 +114,9 @@ public abstract class CollisionHull2D : Particle2D
     }
 
     /*
-     * VERIFIED WORKING
+     * AABB v AABB
      */
-    public static HullCollision2D detectCollision(AABBHull2D a, AABBHull2D b)
+    public static bool detectCollision(AABBHull2D a, AABBHull2D b)
     {
         Vector2[] points = new Vector2[4];
         for(int i =0; i < points.Length; i++)
@@ -77,27 +129,16 @@ public abstract class CollisionHull2D : Particle2D
             Vector2 minMaxB = new Vector2(b.position[i] - b.halfLength[i], b.position[i] + b.halfLength[i]);
             if (!detectCollisionFromMinMax(minMaxA,minMaxB))
             {
-                return null;
-            }
-            if (minMaxA.x > minMaxB.x) //amin > bmin, thus a is left of b
-            {
-                points[0][i] = minMaxA.x - minMaxB.y;//TODO BROKEN
-            }
-            else
-            {
-                
+                return false;
             }
         }
-
-        HullCollision2D collision = new HullCollision2D(a,b);
-        collision.contactPoints = new HullCollision2D.CollContact2D[0];
-        return collision;
+        return true;
     }
 
     /*
     * VERIFIED WORKING, based off OBB v OBB Collision
     */
-    public static HullCollision2D detectCollision(OBBHull2D lft, AABBHull2D rgt)
+    public static bool detectCollision(OBBHull2D lft, AABBHull2D rgt)
     {
         if( checkAxis(lft, rgt, lft.getXNormal()) && 
             checkAxis(lft, rgt, lft.getYNormal()) && 
@@ -105,15 +146,15 @@ public abstract class CollisionHull2D : Particle2D
             checkAxis(lft, rgt, Vector2.up))
         {
             HullCollision2D collision = new HullCollision2D(lft, rgt);
-            return collision;
+            return true;
         }
-        return null;
+        return false;
     }
 
     /*
      * Verified Working, possible error in using 4 checkaxis, i think i missed a check somewhere deeper in the code
      */
-    public static HullCollision2D detectCollision(OBBHull2D lft, OBBHull2D rgt)
+    public static bool detectCollision(OBBHull2D lft, OBBHull2D rgt)
     {
         //check each axis on each side, need to make better
         if( checkAxis(lft, rgt, lft.getXNormal()) && 
@@ -121,10 +162,9 @@ public abstract class CollisionHull2D : Particle2D
             checkAxis(lft, rgt, rgt.getXNormal()) && 
             checkAxis(lft, rgt, rgt.getYNormal()))
         {
-            HullCollision2D collision = new HullCollision2D(lft, rgt);
-            return collision;
+            return true;
         }
-        return null;
+        return false;
     }
 
     public static bool checkAxis(OBBHull2D a, OBBHull2D b, Vector2 norm)
@@ -195,6 +235,24 @@ public abstract class CollisionHull2D : Particle2D
                 return true;
             else
                 return false;
+        }
+    }
+
+    public static float calculateMinMaxCollisionOverlap(Vector2 aMinMax, Vector2 bMinMax)
+    {
+        if (aMinMax.x > bMinMax.x) //amin > bmin, thus a is left of b
+        {
+            if (aMinMax.x < bMinMax.y) //amin < bmax, thus within bounds
+                return aMinMax.x - bMinMax.y;
+            else
+                return 0.0f;
+        }
+        else
+        {
+            if (bMinMax.x < aMinMax.y)
+                return bMinMax.x - aMinMax.y;
+            else
+                return 0.0f;
         }
     }
 

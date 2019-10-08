@@ -14,19 +14,19 @@ public class AABBHull2D : CollisionHull2D
         Gizmos.DrawLine(position + new Vector2(-halfLength.x, halfLength.y), position + halfLength);
     }
 
-    public override HullCollision2D detectCollision(CollisionHull2D other)
+    public override bool detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)
         {
-            return detectCollision(other as CircleHull2D, this);
+            return detectCollisionResponse(other as CircleHull2D, this);
         }
         else if (other is AABBHull2D)
         {
-            return detectCollision(this, other as AABBHull2D);
+            return detectCollisionResponse(this, other as AABBHull2D);
         }
         else if (other is OBBHull2D)
         {
-            return detectCollision(other as OBBHull2D, this);
+            return detectCollisionResponse(other as OBBHull2D, this);
         }
         throw new System.Exception();
     }

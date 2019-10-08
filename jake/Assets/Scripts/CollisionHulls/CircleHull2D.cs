@@ -21,7 +21,7 @@ public class CircleHull2D : CollisionHull2D
     }
 
 
-    public override HullCollision2D detectCollision(CollisionHull2D other)
+    public override bool detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)
         {
@@ -34,6 +34,23 @@ public class CircleHull2D : CollisionHull2D
         else if(other is OBBHull2D)
         {
             return detectCollision(this, other as OBBHull2D);
+        }
+        throw new System.Exception(); //oops, looks like you added another collision type, thats a no no
+    }
+
+    public override HullCollision2D detectCollisionResponse(CollisionHull2D other)
+    {
+        if (other is CircleHull2D)
+        {
+            return detectCollisionResponse(this, other as CircleHull2D);
+        }
+        else if (other is AABBHull2D)
+        {
+            return detectCollisionResponse(this, other as AABBHull2D);
+        }
+        else if (other is OBBHull2D)
+        {
+            return detectCollisionResponse(this, other as OBBHull2D);
         }
         throw new System.Exception(); //oops, looks like you added another collision type, thats a no no
     }

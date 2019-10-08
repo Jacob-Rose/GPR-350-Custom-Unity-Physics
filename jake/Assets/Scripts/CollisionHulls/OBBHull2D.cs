@@ -71,7 +71,7 @@ public class OBBHull2D : CollisionHull2D
         return position + distanceX * getXNormal() + distanceY * getYNormal();
     }
 
-    public override HullCollision2D detectCollision(CollisionHull2D other)
+    public override bool detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)
         {
@@ -84,6 +84,23 @@ public class OBBHull2D : CollisionHull2D
         else if (other is OBBHull2D)
         {
             return detectCollision(this, other as OBBHull2D);
+        }
+        throw new System.Exception();
+    }
+
+    public override HullCollision2D detectCollisionResponse(CollisionHull2D other)
+    {
+        if (other is CircleHull2D)
+        {
+            return detectCollisionResponse(other as CircleHull2D, this);
+        }
+        else if (other is AABBHull2D)
+        {
+            return detectCollisionResponse(this, other as AABBHull2D);
+        }
+        else if (other is OBBHull2D)
+        {
+            return detectCollisionResponse(this, other as OBBHull2D);
         }
         throw new System.Exception();
     }
