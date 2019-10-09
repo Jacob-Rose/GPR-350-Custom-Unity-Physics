@@ -30,7 +30,7 @@ public abstract class CollisionHull2D : Particle2D
         {
             HullCollision2D collision = new HullCollision2D(a, b);
             //collision.closingVelocity = -(lft.velocity - rgt.velocity) *(lft.velocity - rgt.velocity).normalized;
-            collision.contactPoints = new HullCollision2D.CollContact2D[0];
+            collision.contactPoints = new HullCollision2D.CollContact2D[1];
             Vector2 dir = a.position - b.position;
             dir.Normalize();
             dir *= (a.radius + b.radius) - Vector2.Distance(a.position, b.position);
@@ -118,11 +118,6 @@ public abstract class CollisionHull2D : Particle2D
      */
     public static bool detectCollision(AABBHull2D a, AABBHull2D b)
     {
-        Vector2[] points = new Vector2[4];
-        for(int i =0; i < points.Length; i++)
-        {
-            points[i] = Vector2.zero;
-        }
         for(int i = 0; i < 2; i++) //do for each axis
         {
             Vector2 minMaxA = new Vector2(a.position[i] - a.halfLength[i], a.position[i] + a.halfLength[i]);
@@ -135,21 +130,61 @@ public abstract class CollisionHull2D : Particle2D
         return true;
     }
 
+    public static HullCollision2D detectCollisionResponse(AABBHull2D a, AABBHull2D b)
+    {
+        HullCollision2D collision = new HullCollision2D(a, b);
+        collision.contactPoints = new HullCollision2D.CollContact2D[1];
+        Vector2 penNorm = Vector2.zero;
+        int indexToUse = -1;
+        float minMaxDiff = 0.0f;
+        for (int i = 0; i < 2; i++) //do for each axis
+        {
+            Vector2 minMaxA = new Vector2(a.position[i] - a.halfLength[i], a.position[i] + a.halfLength[i]);
+            Vector2 minMaxB = new Vector2(b.position[i] - b.halfLength[i], b.position[i] + b.halfLength[i]);
+            float tmpDiff = calculateMinMaxCollisionOverlap(minMaxA, minMaxB);
+            if(tmpDiff > Mathf.Abs(minMaxDiff))
+            {
+                if(a.position[i] > b.position[i])
+                {
+                    tmpDiff *= -1.0f;
+                }
+                indexToUse = i;
+                minMaxDiff = tmpDiff;
+            }
+        }
+        collision.contactPoints[0] = new HullCollision2D.CollContact2D(a, b, penNorm);
+        return collision;
+    }
+
     /*
     * VERIFIED WORKING, based off OBB v OBB Collision
     */
-    public static bool detectCollision(OBBHull2D lft, AABBHull2D rgt)
+    public static bool detectCollision(OBBHull2D a, AABBHull2D b)
     {
-        if( checkAxis(lft, rgt, lft.getXNormal()) && 
-            checkAxis(lft, rgt, lft.getYNormal()) && 
-            checkAxis(lft, rgt, Vector2.left) && 
-            checkAxis(lft, rgt, Vector2.up))
+        if( checkAxis(a, b, a.getXNormal()) && 
+            checkAxis(a, b, a.getYNormal()) && 
+            checkAxis(a, b, Vector2.left) && 
+            checkAxis(a, b, Vector2.up))
         {
-            HullCollision2D collision = new HullCollision2D(lft, rgt);
             return true;
         }
         return false;
     }
+
+    public static HullCollision2D detectCollisionResponse(OBBHull2D a, AABBHull2D b)
+    {
+        if (checkAxis(a, b, a.getXNormal()) &&
+            checkAxis(a, b, a.getYNormal()) &&
+            checkAxis(a, b, Vector2.left) &&
+            checkAxis(a, b, Vector2.up))
+        {
+            HullCollision2D collision = new HullCollision2D(a, b);
+            collision.contactPoints = new HullCollision2D.CollContact2D[0];
+            return collision;
+        }
+        return null;
+    }
+
 
     /*
      * Verified Working, possible error in using 4 checkaxis, i think i missed a check somewhere deeper in the code
@@ -165,6 +200,21 @@ public abstract class CollisionHull2D : Particle2D
             return true;
         }
         return false;
+    }
+
+    public static HullCollision2D detectCollisionResponse(OBBHull2D lft, OBBHull2D rgt)
+    {
+        //check each axis on each side, need to make better
+        if (checkAxis(lft, rgt, lft.getXNormal()) &&
+            checkAxis(lft, rgt, lft.getYNormal()) &&
+            checkAxis(lft, rgt, rgt.getXNormal()) &&
+            checkAxis(lft, rgt, rgt.getYNormal()))
+        {
+            HullCollision2D collision = new HullCollision2D(lft, rgt);
+            collision.contactPoints = new HullCollision2D.CollContact2D[0];
+            return collision;
+        }
+        return null;
     }
 
     public static bool checkAxis(OBBHull2D a, OBBHull2D b, Vector2 norm)
@@ -214,7 +264,7 @@ public abstract class CollisionHull2D : Particle2D
 
     public static Vector2 getMinMaxProjectionValuesOnNorm(CircleHull2D circle, Vector2 norm)
     {
-        float a, b, c, d;
+        float a, b;
         int axis = norm.x != 0 ? 0 : 1; //just to make a scaler, but in case the x axis is zero, and if they are both zero then what the hell u doing with a normal (0,0)
         a = (proj(circle.position, norm)[axis] - circle.radius)/ norm[axis];
         b = (proj(circle.position, norm)[axis] + circle.radius)/ norm[axis];

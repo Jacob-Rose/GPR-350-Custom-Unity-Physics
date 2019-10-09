@@ -18,6 +18,23 @@ public class AABBHull2D : CollisionHull2D
     {
         if (other is CircleHull2D)
         {
+            return detectCollision(other as CircleHull2D, this);
+        }
+        else if (other is AABBHull2D)
+        {
+            return detectCollision(this, other as AABBHull2D);
+        }
+        else if (other is OBBHull2D)
+        {
+            return detectCollision(other as OBBHull2D, this);
+        }
+        throw new System.Exception();
+    }
+
+    public override HullCollision2D detectCollisionResponse(CollisionHull2D other)
+    {
+        if (other is CircleHull2D)
+        {
             return detectCollisionResponse(other as CircleHull2D, this);
         }
         else if (other is AABBHull2D)

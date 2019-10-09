@@ -57,9 +57,18 @@ public class HullCollision2D
             }
 
             Vector2 inpulse = deltaVelocity / totalInverseMass;
-            Vector2 inpulsePerMass = norm * inpulse.magnitude;
-            hullA.setVelocity(hullA.getVelocity() + inpulsePerMass * -hullB.InverseMass);
-            hullB.setVelocity(hullB.getVelocity() + inpulsePerMass * -hullA.InverseMass);
+            Vector2 inpulsePerMass = penetrationNorm.normalized * inpulse.magnitude * newSeperatingVelocity;
+            float isHullRight = 1.0f;
+            if(Vector2.Dot(hullA.getVelocity(), penetrationNorm) > 0.0f)
+            {
+                isHullRight = -1.0f;
+            }
+            hullA.setVelocity(hullA.getVelocity() + inpulsePerMass * -hullB.InverseMass * isHullRight);
+            if (Vector2.Dot(hullB.getVelocity(), penetrationNorm) > 0.0f)
+            {
+                isHullRight = -1.0f;
+            }
+            hullB.setVelocity(hullB.getVelocity() + inpulsePerMass * -hullA.InverseMass * isHullRight);
         }
 
         private void ResolveInterPenetration(float duration)

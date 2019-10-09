@@ -31,7 +31,8 @@ public class PhysicsWorld : MonoBehaviour
                 bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
                 if (i != j && coll)
                 {
-                    Debug.Log("Collision Happened");
+                    //coll.Resolve(Time.deltaTime);
+                    Debug.Log("Collision Occured between " + mPhysicsObjects[i].gameObject.name + " " + mPhysicsObjects[j].gameObject.name);
                 }
             }
         }

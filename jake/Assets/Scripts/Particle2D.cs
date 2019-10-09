@@ -85,6 +85,8 @@ public class Particle2D : MonoBehaviour
 
     void updateAngularAcceleration()
     {
+        if (invMass == 0.0f)
+            return;
         angularAcceleration = (torque / inertia);
         torque = 0.0f;
     }
@@ -168,6 +170,6 @@ public class Particle2D : MonoBehaviour
         calculateAcceleration();
 
         transform.position = position;
-        transform.rotation = Quaternion.Euler(0, 0, rotation);
+            transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 }
