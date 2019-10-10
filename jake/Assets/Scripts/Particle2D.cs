@@ -9,7 +9,7 @@ public class Particle2D : MonoBehaviour
     public float dampening = 0.8f;
     public Vector2 position;
     public float rotation;
-    public float angularVelocity;
+    private float angularVelocity;
     public float angularAcceleration;
     public Vector2 velocity;
     public Vector2 acceleration;
@@ -148,7 +148,7 @@ public class Particle2D : MonoBehaviour
         acceleration = force * invMass * dampening;
         force.Set(0.0f, 0.0f);
     }
-    protected void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         //calculation type
         float fractionTime = Time.fixedDeltaTime / physicsIterations;

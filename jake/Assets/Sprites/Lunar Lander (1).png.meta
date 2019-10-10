@@ -1,0 +1,511 @@
+fileFormatVersion: 2
+guid: 484e4f712388b534d8224e1a4ca92c3e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2291236470966835352
+    second: Lunar Lander (1)_0
+  - first:
+      213: -3358578101820286283
+    second: Lunar Lander (1)_1
+  - first:
+      213: -8799694451024318247
+    second: Lunar Lander (1)_2
+  - first:
+      213: -5044843045523365478
+    second: Lunar Lander (1)_3
+  - first:
+      213: 9209934574873534985
+    second: Lunar Lander (1)_4
+  - first:
+      213: 8985449281686899084
+    second: Lunar Lander (1)_5
+  - first:
+      213: -178483053344672956
+    second: Lunar Lander (1)_6
+  - first:
+      213: 8559065740281226482
+    second: Lunar Lander (1)_7
+  - first:
+      213: 654779545872787718
+    second: Lunar Lander (1)_8
+  - first:
+      213: 3948355232157323058
+    second: Lunar Lander (1)_9
+  - first:
+      213: -3548437420111624147
+    second: Lunar Lander (1)_10
+  - first:
+      213: 1492847842542466090
+    second: Lunar Lander (1)_11
+  - first:
+      213: 4881515574647761724
+    second: Lunar Lander (1)_12
+  - first:
+      213: 6787223787263887894
+    second: Lunar Lander (1)_13
+  - first:
+      213: -5678013544975218939
+    second: Lunar Lander (1)_14
+  - first:
+      213: -1256907973708472287
+    second: Lunar Lander (1)_15
+  - first:
+      213: 1034531438737323955
+    second: Lunar Lander (1)_16
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 2
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 1
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 1
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Lunar Lander (1)_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 57
+        width: 20
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 074e4e4f61bd79d42af39d46ec3fb0ed
+      internalID: -2291236470966835352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_1
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 99
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40025b6afa50dcb41a0148de3af692ba
+      internalID: -3358578101820286283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_2
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 99
+        width: 17
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82b7c86968a23fd4c89bf0e40b619da3
+      internalID: -8799694451024318247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_3
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 76
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9767fc08c47e0a4fb681afdfe59f297
+      internalID: -5044843045523365478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_4
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 57
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff49cb819af1b984a8c6755746435f72
+      internalID: 9209934574873534985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_5
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 54
+        width: 14
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e09922b9d061a1b4faa64a27b043a797
+      internalID: 8985449281686899084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_6
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 53
+        width: 14
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e3e6d8bae848764995fe36b45370f22
+      internalID: -178483053344672956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_7
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 80
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8c587b47d2ec55448bb2d280307e146
+      internalID: 8559065740281226482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_8
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 80
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5a25c653bab15f459e4508262d0c918
+      internalID: 654779545872787718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_9
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 79
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63da3c2e7e92aa94e91dc5983d1bcdf6
+      internalID: 3948355232157323058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_10
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 79
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b6c1e571b51ce14eb2fd070e46b33fe
+      internalID: -3548437420111624147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_11
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 57
+        width: 14
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2de6afb95a2a01d4cbc7775109dc6f44
+      internalID: 1492847842542466090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_12
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 0
+        width: 49
+        height: 67
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84395d015aa4d774186c0d9d27305944
+      internalID: 4881515574647761724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_13
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 0
+        width: 60
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15186656d034ce345aa545c83bbcec97
+      internalID: 6787223787263887894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 31
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c4200cb92338bb42988ccbcb8bb4aa6
+      internalID: -5678013544975218939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_15
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 31
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4733bd24e5fac34f882063054429d86
+      internalID: -1256907973708472287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lunar Lander (1)_16
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 31
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a6f9aa6c1e2bcf4e87ecfd583ce2e6e
+      internalID: 1034531438737323955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -7,11 +7,14 @@ public class AABBHull2D : CollisionHull2D
     public Vector2 halfLength;
     public void OnDrawGizmos()
     {
+        Vector2 offset = Vector3.zero;
+        if(!Application.isPlaying)
+            offset = new Vector2(transform.position.x, transform.position.y);
         Gizmos.color = new Color(0.2f, 1.0f, 1.0f);
-        Gizmos.DrawLine(position + halfLength, position + new Vector2(halfLength.x, -halfLength.y));
-        Gizmos.DrawLine(position + new Vector2(halfLength.x, -halfLength.y), position - halfLength);
-        Gizmos.DrawLine(position - halfLength, position + new Vector2(-halfLength.x, halfLength.y));
-        Gizmos.DrawLine(position + new Vector2(-halfLength.x, halfLength.y), position + halfLength);
+        Gizmos.DrawLine(position + offset + halfLength, position + offset + new Vector2(halfLength.x, -halfLength.y));
+        Gizmos.DrawLine(position + offset + new Vector2(halfLength.x, -halfLength.y), position + offset - halfLength);
+        Gizmos.DrawLine(position + offset - halfLength, position + offset + new Vector2(-halfLength.x, halfLength.y));
+        Gizmos.DrawLine(position + offset + new Vector2(-halfLength.x, halfLength.y), position + offset + halfLength);
     }
 
     public override bool detectCollision(CollisionHull2D other)
