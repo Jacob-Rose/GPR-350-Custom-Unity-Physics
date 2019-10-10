@@ -44,7 +44,7 @@ public class OBBHull2D : CollisionHull2D
     //to find the closest point was very difficult, so i got the code from 
     //http://community.monogame.net/t/closest-point-on-obb-to-given-point/9129/3
     //I modified it to used Vector2 and the correct variable names though and understand it
-    public Vector3 ClosestPointTo(Vector2 point)
+    public override Vector2 GetClosestPoint(Vector2 point)
     {
         // vector from box centre to point
         Vector2 directionVector = point - position;

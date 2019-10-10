@@ -13,6 +13,8 @@ public abstract class CollisionHull2D : Particle2D
     public abstract bool detectCollision(CollisionHull2D other);
     public abstract HullCollision2D detectCollisionResponse(CollisionHull2D other);
 
+    public abstract Vector2 GetClosestPoint(Vector2 point);
+
     /*
      * Circle V Circle
      */
@@ -26,16 +28,13 @@ public abstract class CollisionHull2D : Particle2D
     }
     public static HullCollision2D detectCollisionResponse(CircleHull2D a, CircleHull2D b)
     {
-        if (a.radius + b.radius >= Vector2.Distance(a.position, b.position))
+        float dist = Vector2.Distance(a.position, b.position);
+        if (a.radius + b.radius > dist)
         {
-            HullCollision2D collision = new HullCollision2D(a, b);
+            Vector2 penetration = (a.position - b.position).normalized;
+            float penAmount = (a.radius + b.radius) - Vector2.Distance(a.position, b.position);
+            HullCollision2D collision = new HullCollision2D(a, b, penetration , penAmount);
             //collision.closingVelocity = -(lft.velocity - rgt.velocity) *(lft.velocity - rgt.velocity).normalized;
-            collision.contactPoints = new HullCollision2D.CollContact2D[1];
-            Vector2 dir = a.position - b.position;
-            dir.Normalize();
-            dir *= (a.radius + b.radius) - Vector2.Distance(a.position, b.position);
-            Debug.DrawRay(a.position, dir);
-            collision.contactPoints[0] = new HullCollision2D.CollContact2D(a, b, dir);
             return collision;
         }
         return null;//failed
@@ -47,11 +46,8 @@ public abstract class CollisionHull2D : Particle2D
      */
     public static bool detectCollision(CircleHull2D circle, AABBHull2D square)
     {
-        float closestPointX = Mathf.Clamp(circle.position.x, square.position.x - square.halfLength.x, square.position.x + square.halfLength.x);
-        float closestPointY = Mathf.Clamp(circle.position.y, square.position.y - square.halfLength.y, square.position.y + square.halfLength.y);
-
-        Vector2 closestPoint = new Vector2(closestPointX, closestPointY);
-        Debug.DrawLine(new Vector3(closestPointX, closestPointY, 0), circle.position);
+        Vector2 closestPoint = square.GetClosestPoint(circle.position);
+        Debug.DrawLine(new Vector3(closestPoint.x, closestPoint.y, 0), circle.position);
         if(circle.radius > Vector2.Distance(circle.position, closestPoint))
         {
             return true;
@@ -60,27 +56,32 @@ public abstract class CollisionHull2D : Particle2D
     }
     public static HullCollision2D detectCollisionResponse(CircleHull2D circle, AABBHull2D square)
     {
-        float closestPointX = Mathf.Clamp(circle.position.x, square.position.x - square.halfLength.x, square.position.x + square.halfLength.x);
-        float closestPointY = Mathf.Clamp(circle.position.y, square.position.y - square.halfLength.y, square.position.y + square.halfLength.y);
-
-        Vector2 closestPoint = new Vector2(closestPointX, closestPointY);
-        Debug.DrawLine(new Vector3(closestPointX, closestPointY, 0), circle.position);
-        float dist = Vector2.Distance(circle.position, closestPoint);
+        float dist = Vector2.Distance(circle.position, square.GetClosestPoint(circle.position));
+        Vector2 squareClosestPoint = square.GetClosestPoint(circle.position);
+        Vector2 circleClosestPoint = circle.GetClosestPoint(squareClosestPoint); //need to do second
+        Debug.DrawLine(squareClosestPoint, circleClosestPoint);
         if (circle.radius > dist)
         {
-            HullCollision2D collision = new HullCollision2D(circle, square);
-            collision.contactPoints = new HullCollision2D.CollContact2D[1];
-            Vector2 penNorm = Vector2.zero;
-            for (int i = 0; i < 2; i++)//for each axis
+            
+            Vector2 penNorm = squareClosestPoint - circleClosestPoint;
+            if(penNorm[0] > penNorm[1])
             {
-                //check if within axis bounds
-                if(Mathf.Clamp(circle.position[i], square.position[i] - square.halfLength[i], square.position[i] + square.halfLength[i]) != circle.position[i] )
-                {
-
-                    penNorm[i] = circle.radius - Vector2.Distance(circle.position, closestPoint);
-                }
+                penNorm[1] = 0.0f;
             }
-            collision.contactPoints[0] = new HullCollision2D.CollContact2D(circle, square, penNorm);
+            else
+            {
+                penNorm[0] = 0.0f;
+            }
+            HullCollision2D collision;
+            if (Vector3.Dot(circle.velocity, penNorm) > 0.0f)
+            {
+                collision = new HullCollision2D(circle, square, penNorm.normalized, penNorm.magnitude);
+            }
+            else
+            {
+                collision = new HullCollision2D(circle, square, penNorm.normalized, penNorm.magnitude);
+            }
+            
             return collision;
         }
         return null;
@@ -91,7 +92,7 @@ public abstract class CollisionHull2D : Particle2D
      */
     public static bool detectCollision(CircleHull2D circle, OBBHull2D square)
     {
-        Vector2 closestPoint = square.ClosestPointTo(circle.position);
+        Vector2 closestPoint = square.GetClosestPoint(circle.position);
         Debug.DrawLine(new Vector3(closestPoint.x, closestPoint.y, 0), circle.position);
         if( circle.radius > Vector2.Distance(circle.position, closestPoint))
         {
@@ -102,12 +103,30 @@ public abstract class CollisionHull2D : Particle2D
     //TODO
     public static HullCollision2D detectCollisionResponse(CircleHull2D circle, OBBHull2D square)
     {
-        Vector2 closestPoint = square.ClosestPointTo(circle.position);
-        Debug.DrawLine(new Vector3(closestPoint.x, closestPoint.y, 0), circle.position);
-        if (circle.radius > Vector2.Distance(circle.position, closestPoint))
+        Vector2 closestPointSquare = square.GetClosestPoint(circle.position);
+        Vector2 closestPointCircle = circle.GetClosestPoint(closestPointSquare);
+        Debug.DrawLine(new Vector3(closestPointSquare.x, closestPointSquare.y, 0), new Vector3(closestPointCircle.x, closestPointCircle.y, 0));
+        if (circle.radius > Vector2.Distance(circle.position, closestPointSquare))
         {
-            HullCollision2D collision = new HullCollision2D(circle, square);
-            collision.contactPoints = new HullCollision2D.CollContact2D[0];
+            
+            Vector2 penNorm = closestPointSquare- closestPointCircle;
+            if (penNorm[0] > penNorm[1])
+            {
+                penNorm[1] = 0.0f;
+            }
+            else
+            {
+                penNorm[0] = 0.0f;
+            }
+            HullCollision2D collision;
+            if (penNorm.x > 0.0f)
+            {
+                collision = new HullCollision2D(circle, square, square.getXNormal(), penNorm.magnitude);
+            }
+            else
+            {
+                collision = new HullCollision2D(circle, square, square.getYNormal(), penNorm.magnitude);
+            }
             return collision;
         }
         return null;
@@ -132,28 +151,27 @@ public abstract class CollisionHull2D : Particle2D
 
     public static HullCollision2D detectCollisionResponse(AABBHull2D a, AABBHull2D b)
     {
-        HullCollision2D collision = new HullCollision2D(a, b);
-        collision.contactPoints = new HullCollision2D.CollContact2D[1];
-        Vector2 penNorm = Vector2.zero;
-        int indexToUse = -1;
-        float minMaxDiff = 0.0f;
         for (int i = 0; i < 2; i++) //do for each axis
         {
             Vector2 minMaxA = new Vector2(a.position[i] - a.halfLength[i], a.position[i] + a.halfLength[i]);
             Vector2 minMaxB = new Vector2(b.position[i] - b.halfLength[i], b.position[i] + b.halfLength[i]);
-            float tmpDiff = calculateMinMaxCollisionOverlap(minMaxA, minMaxB);
-            if(tmpDiff > Mathf.Abs(minMaxDiff))
+            if (!detectCollisionFromMinMax(minMaxA, minMaxB))
             {
-                if(a.position[i] > b.position[i])
-                {
-                    tmpDiff *= -1.0f;
-                }
-                indexToUse = i;
-                minMaxDiff = tmpDiff;
+                return null;
             }
         }
-        collision.contactPoints[0] = new HullCollision2D.CollContact2D(a, b, penNorm);
-        return collision;
+        Vector2 aClosestPoint = a.GetClosestPoint(b.position);
+        Vector2 bClosestPoint = b.GetClosestPoint(a.position);
+        Vector2 penNorm = bClosestPoint - aClosestPoint;
+        if (penNorm[0] > penNorm[1])
+        {
+            penNorm[1] = 0.0f;
+        }
+        else
+        {
+            penNorm[0] = 0.0f;
+        }
+        return new HullCollision2D(a, b, penNorm.normalized, penNorm.magnitude);
     }
 
     /*
@@ -178,8 +196,9 @@ public abstract class CollisionHull2D : Particle2D
             checkAxis(a, b, Vector2.left) &&
             checkAxis(a, b, Vector2.up))
         {
+            Vector2 bClosestPoint = b.GetClosestPoint(a.position);
+            Vector2 aClosestPoint = a.GetClosestPoint(bClosestPoint);
             HullCollision2D collision = new HullCollision2D(a, b);
-            collision.contactPoints = new HullCollision2D.CollContact2D[0];
             return collision;
         }
         return null;
@@ -202,16 +221,38 @@ public abstract class CollisionHull2D : Particle2D
         return false;
     }
 
-    public static HullCollision2D detectCollisionResponse(OBBHull2D lft, OBBHull2D rgt)
+    public static HullCollision2D detectCollisionResponse(OBBHull2D a, OBBHull2D b)
     {
         //check each axis on each side, need to make better
-        if (checkAxis(lft, rgt, lft.getXNormal()) &&
-            checkAxis(lft, rgt, lft.getYNormal()) &&
-            checkAxis(lft, rgt, rgt.getXNormal()) &&
-            checkAxis(lft, rgt, rgt.getYNormal()))
+        if (checkAxis(a, b, a.getXNormal()) &&
+            checkAxis(a, b, a.getYNormal()) &&
+            checkAxis(a, b, b.getXNormal()) &&
+            checkAxis(a, b, b.getYNormal()))
         {
-            HullCollision2D collision = new HullCollision2D(lft, rgt);
-            collision.contactPoints = new HullCollision2D.CollContact2D[0];
+            Vector2 aClosestPoint = a.GetClosestPoint(b.position);
+            Vector2 bClosestPoint = b.GetClosestPoint(a.position);
+            Vector2 middle = Vector2.Lerp(a.position, b.position, 0.5f);
+            aClosestPoint = a.GetClosestPoint(middle);
+            bClosestPoint = b.GetClosestPoint(middle);
+            Debug.DrawLine(aClosestPoint, bClosestPoint, Color.green);
+            Vector2 penNorm = aClosestPoint - bClosestPoint;
+            if (penNorm[0] > penNorm[1])
+            {
+                penNorm[1] = 0.0f;
+            }
+            else
+            {
+                penNorm[0] = 0.0f;
+            }
+            HullCollision2D collision;
+            if (penNorm.x > 0.0f)
+            {
+                collision = new HullCollision2D(a, b, a.getXNormal(), penNorm.magnitude);
+            }
+            else
+            {
+                collision = new HullCollision2D(a, b, a.getYNormal(), penNorm.magnitude);
+            }
             return collision;
         }
         return null;

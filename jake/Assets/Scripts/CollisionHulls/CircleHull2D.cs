@@ -20,6 +20,12 @@ public class CircleHull2D : CollisionHull2D
         }
     }
 
+    public override Vector2 GetClosestPoint(Vector2 point)
+    {
+        Vector2 dir = point - position;
+        dir.Normalize();
+        return position + (dir * radius);
+    }
 
     public override bool detectCollision(CollisionHull2D other)
     {

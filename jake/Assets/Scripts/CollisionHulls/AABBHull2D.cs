@@ -17,6 +17,14 @@ public class AABBHull2D : CollisionHull2D
         Gizmos.DrawLine(position + offset + new Vector2(-halfLength.x, halfLength.y), position + offset + halfLength);
     }
 
+    public override Vector2 GetClosestPoint(Vector2 point)
+    {
+        float closestPointX = Mathf.Clamp(point.x, position.x - halfLength.x, position.x + halfLength.x);
+        float closestPointY = Mathf.Clamp(point.y, position.y - halfLength.y, position.y + halfLength.y);
+
+        return new Vector2(closestPointX, closestPointY);
+    }
+
     public override bool detectCollision(CollisionHull2D other)
     {
         if (other is CircleHull2D)

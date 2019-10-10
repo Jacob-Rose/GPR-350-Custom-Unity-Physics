@@ -22,16 +22,19 @@ public class PhysicsWorld : MonoBehaviour
     
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+
         for(int i =0; i < mPhysicsObjects.Count; i++)
         {
-            for(int j = 0; j < mPhysicsObjects.Count; j++)
+            for(int j = i+1; j < mPhysicsObjects.Count; j++)
             {
-                bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
-                if (i != j && coll)
+                //bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
+                HullCollision2D collision = mPhysicsObjects[i].detectCollisionResponse(mPhysicsObjects[j]);
+                if (collision != null)
                 {
-                    //coll.Resolve(Time.deltaTime);
+                    collision.Resolve(Time.deltaTime);
+                    
                     Debug.Log("Collision Occured between " + mPhysicsObjects[i].gameObject.name + " " + mPhysicsObjects[j].gameObject.name);
                 }
             }

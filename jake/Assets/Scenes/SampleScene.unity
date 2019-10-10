@@ -349,7 +349,7 @@ GameObject:
   - component: {fileID: 1135356875}
   - component: {fileID: 1135356874}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: OBB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -364,25 +364,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1135356873}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de2940d0e0b8a6e45b3d4a1113083928, type: 3}
+  m_Script: {fileID: 11500000, guid: b2445d1dd6dee48498dcfa94f837d50e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   startMass: 10
   dampening: 0.8
-  position: {x: -4.54, y: 0.87}
+  position: {x: -4.07, y: 0}
   rotation: 0
-  angularVelocity: 0
   angularAcceleration: 0
   velocity: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
   calculationType: 0
-  shapeType: 0
+  shapeType: 2
   inertiaVar1: 2
-  inertiaVar2: 0
+  inertiaVar2: 2
   shouldForceAtPointMove: 1
   restitution: 0.5
   physicsIterations: 2
-  radius: 3
+  halfLength: {x: 1, y: 1}
 --- !u!4 &1135356875
 Transform:
   m_ObjectHideFlags: 0
@@ -395,9 +394,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1509503350
+--- !u!1 &1261549899
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -405,54 +404,53 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1509503352}
-  - component: {fileID: 1509503351}
+  - component: {fileID: 1261549901}
+  - component: {fileID: 1261549900}
   m_Layer: 0
-  m_Name: Blade
+  m_Name: OBB (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1509503351
+--- !u!114 &1261549900
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509503350}
+  m_GameObject: {fileID: 1261549899}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2445d1dd6dee48498dcfa94f837d50e, type: 3}
+  m_Script: {fileID: 11500000, guid: de2940d0e0b8a6e45b3d4a1113083928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startMass: 10
+  startMass: 100
   dampening: 0.8
-  position: {x: 0, y: 2}
+  position: {x: 1.37, y: 0}
   rotation: 0
-  angularVelocity: 0
   angularAcceleration: 0
-  velocity: {x: 0, y: 0}
+  velocity: {x: -3.02, y: 0}
   acceleration: {x: 0, y: 0}
   calculationType: 0
-  shapeType: 2
-  inertiaVar1: 1
-  inertiaVar2: 4
+  shapeType: 0
+  inertiaVar1: 2
+  inertiaVar2: 0
   shouldForceAtPointMove: 1
   restitution: 0.5
   physicsIterations: 2
-  halfLength: {x: 1, y: 4}
---- !u!4 &1509503352
+  radius: 2
+--- !u!4 &1261549901
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509503350}
+  m_GameObject: {fileID: 1261549899}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
