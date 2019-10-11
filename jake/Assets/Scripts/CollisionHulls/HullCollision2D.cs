@@ -28,9 +28,12 @@ public class HullCollision2D
     public float restitution;
     public Vector2 contactNormal;
 
-    public void Resolve()
+    public void Resolve(float deltaT)
     {
-        ResolveVelocity();
+        a.position = a.transform.position;
+        b.position = b.transform.position;
+        ResolveVelocity(deltaT);
+        
         ResolveInterPenetration();
     }
 
@@ -41,7 +44,7 @@ public class HullCollision2D
         return Vector2.Dot(relativeVelocity, contactNormal);
     }
 
-    private void ResolveVelocity()
+    private void ResolveVelocity(float deltaT)
     {
         float seperatingVelocity = calculateSeperatingVelocity();
         if (seperatingVelocity > 0)
@@ -50,6 +53,20 @@ public class HullCollision2D
         }
 
         float newSeperatingVelocity = -seperatingVelocity * restitution;
+        
+        Vector2 accCausedVelocity = b.acceleration - a.acceleration;
+        float accCausedSepVelocity = Vector2.Dot(accCausedVelocity, contactNormal) * deltaT;
+
+        if(accCausedSepVelocity> 0)
+        {
+            newSeperatingVelocity += restitution * accCausedSepVelocity;
+
+            if(newSeperatingVelocity < 0)
+            {
+                newSeperatingVelocity = 0.0f;
+            }
+        }
+
         float deltaVelocity = newSeperatingVelocity - seperatingVelocity;
 
         float totalInverseMass = a.InverseMass + b.InverseMass;
@@ -60,16 +77,8 @@ public class HullCollision2D
 
         float inpulse = deltaVelocity / totalInverseMass;
         Vector2 inpulsePerMass = contactNormal * inpulse * newSeperatingVelocity;
-        /*if(Vector2.Dot(seperatingVelocity, penetrationNorm) > 0.0f)
-        {
-            isHullRight = -1.0f;
-        }*/
-        a.setVelocity(a.getVelocity() + inpulsePerMass * -a.InverseMass * -1.0f);
-        /*if (Vector2.Dot(seperatingVelocity, penetrationNorm) > 0.0f)
-        {
-            isHullRight = -1.0f;
-        }*/
-        b.setVelocity(b.getVelocity() + inpulsePerMass * -b.InverseMass);
+        a.setVelocity((a.getVelocity() + inpulsePerMass * a.InverseMass));
+        b.setVelocity((b.getVelocity() + inpulsePerMass * -b.InverseMass));
     }
 
     private void ResolveInterPenetration()
@@ -86,9 +95,18 @@ public class HullCollision2D
         }
 
         Vector2 movePerMass = contactNormal * (penetration / totalInverseMass);
+
         Vector2 hullAMovement = movePerMass * a.InverseMass;
         Vector2 hullBMovement = movePerMass * -b.InverseMass;
-        
+
+        if (Vector2.Dot(hullAMovement.normalized, a.velocity) > 0.0f)
+        {
+            hullAMovement *= -1.0f;
+        }
+        if (Vector2.Dot(hullBMovement.normalized, b.velocity) < 0.0f)
+        {
+            hullBMovement *= -1.0f;
+        }
 
         a.position = a.position + hullAMovement;
         b.position = b.position + hullBMovement;

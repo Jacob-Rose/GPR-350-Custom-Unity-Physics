@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class LunerLander : OBBHull2D
+public class LunerLander : CircleHull2D
 {
     public Sprite[] sprites;
     public float fuel = 100.0f;

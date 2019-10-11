@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class CollisionHull2D : Particle2D
 {
-    public Color drawColor;
+    public Color drawColor = Color.white;
     public override void Start()
     {
         base.Start();
@@ -151,33 +151,29 @@ public abstract class CollisionHull2D : Particle2D
 
     public static HullCollision2D detectCollisionResponse(AABBHull2D a, AABBHull2D b)
     {
-        Vector2 aClosestPoint = a.GetClosestPoint(b.position);
-        Vector2 bClosestPoint = b.GetClosestPoint(a.position);
-        Debug.DrawLine(aClosestPoint, bClosestPoint);
-        for (int i = 0; i < 2; i++) //do for each axis
+        Dictionary<Vector2, float> axisValues = new Dictionary<Vector2, float>(); //norm to the overlap value
+        axisValues.Add(Vector2.up, checkAxisPenetration(a, b, Vector2.up));
+        axisValues.Add(Vector2.right, checkAxisPenetration(a, b, Vector2.right));
+        Dictionary<Vector2, float>.Enumerator enumerator = axisValues.GetEnumerator();
+        enumerator.MoveNext();
+        KeyValuePair<Vector2, float> bestPenetration = enumerator.Current; //need to set one to compare too, no null value to just allow all checking in the for loop
+        if (bestPenetration.Value == 0.0f)
         {
-            Vector2 minMaxA = new Vector2(a.position[i] - a.halfLength[i], a.position[i] + a.halfLength[i]);
-            Vector2 minMaxB = new Vector2(b.position[i] - b.halfLength[i], b.position[i] + b.halfLength[i]);
-            if (!detectCollisionFromMinMax(minMaxA, minMaxB))
+            return null;
+        }
+        while (enumerator.MoveNext())
+        {
+            if (Mathf.Abs(enumerator.Current.Value) < Mathf.Abs(bestPenetration.Value))
+            {
+                bestPenetration = enumerator.Current;
+            }
+            if (bestPenetration.Value == 0.0f)
             {
                 return null;
             }
         }
-        
-        Vector2 pen = bClosestPoint - aClosestPoint;
-        Vector2 penNorm = pen.normalized;
-        
-        if (penNorm[0] > penNorm[1])
-        {
-            pen[1] = 0.0f;
-        }
-        else
-        {
-            pen[0] = 0.0f;
-        }
         HullCollision2D collision;
-        collision = new HullCollision2D(a, b, penNorm.normalized, pen.magnitude);
-
+        collision = new HullCollision2D(a, b, bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
         return collision;
     }
 
@@ -219,13 +215,13 @@ public abstract class CollisionHull2D : Particle2D
             {
                 bestPenetration = enumerator.Current;
             }
-            else if (bestPenetration.Value == 0.0f)
+            if (bestPenetration.Value == 0.0f)
             {
                 return null;
             }
         }
         HullCollision2D collision;
-        collision = new HullCollision2D(a, b, bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
+        collision = new HullCollision2D(a, b, -bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
         return collision;
     }
 
@@ -307,6 +303,23 @@ public abstract class CollisionHull2D : Particle2D
     }
 
     public static float checkAxisPenetration(OBBHull2D a, AABBHull2D b, Vector2 norm)
+    {
+        Vector2 aProjValues = getMinMaxProjectionValuesOnNorm(a, norm);
+        Vector2 bProjValues = getMinMaxProjectionValuesOnNorm(b, norm);
+        Debug.DrawLine(aProjValues.x * norm, aProjValues.y * norm, Color.blue); //this is dumb useful, the projected line
+        Debug.DrawLine(bProjValues.x * norm, bProjValues.y * norm, Color.red);//this is dumb useful, the projected line
+
+        if (!detectCollisionFromMinMax(aProjValues, bProjValues))
+        {
+            return 0.0f;
+        }
+        else
+        {
+            return calculateMinMaxCollisionOverlap(aProjValues, bProjValues);
+        }
+    }
+
+    public static float checkAxisPenetration(AABBHull2D a, AABBHull2D b, Vector2 norm)
     {
         Vector2 aProjValues = getMinMaxProjectionValuesOnNorm(a, norm);
         Vector2 bProjValues = getMinMaxProjectionValuesOnNorm(b, norm);

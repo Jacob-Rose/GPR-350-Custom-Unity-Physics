@@ -33,7 +33,7 @@ public class PhysicsWorld : MonoBehaviour
                 HullCollision2D collision = mPhysicsObjects[i].detectCollisionResponse(mPhysicsObjects[j]);
                 if (collision != null)
                 {
-                    collision.Resolve();
+                    collision.Resolve(Time.fixedDeltaTime);
                     collision.a.OnCollision(collision.b);
                     collision.b.OnCollision(collision.a);
                     

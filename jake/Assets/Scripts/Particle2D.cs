@@ -150,6 +150,7 @@ public class Particle2D : MonoBehaviour
     }
     public virtual void FixedUpdate()
     {
+        
         //calculation type
         float fractionTime = Time.fixedDeltaTime / physicsIterations;
         for (int i = 0; i < physicsIterations; i++)
@@ -170,6 +171,6 @@ public class Particle2D : MonoBehaviour
         calculateAcceleration();
 
         transform.position = position;
-            transform.rotation = Quaternion.Euler(0, 0, rotation);
+        transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
 }
