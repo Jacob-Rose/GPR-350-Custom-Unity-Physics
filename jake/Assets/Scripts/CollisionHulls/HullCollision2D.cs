@@ -22,18 +22,16 @@ public class HullCollision2D
         this.penetration = 0;
     }
 
-
-
     public CollisionHull2D a;
     public CollisionHull2D b;
     public float penetration;
     public float restitution;
     public Vector2 contactNormal;
 
-    public void Resolve(float duration)
+    public void Resolve()
     {
-        ResolveVelocity(duration);
-        ResolveInterPenetration(duration);
+        ResolveVelocity();
+        ResolveInterPenetration();
     }
 
     public float calculateSeperatingVelocity()
@@ -43,7 +41,7 @@ public class HullCollision2D
         return Vector2.Dot(relativeVelocity, contactNormal);
     }
 
-    private void ResolveVelocity(float duration)
+    private void ResolveVelocity()
     {
         float seperatingVelocity = calculateSeperatingVelocity();
         if (seperatingVelocity > 0)
@@ -74,7 +72,7 @@ public class HullCollision2D
         b.setVelocity(b.getVelocity() + inpulsePerMass * -b.InverseMass);
     }
 
-    private void ResolveInterPenetration(float duration)
+    private void ResolveInterPenetration()
     {
         if (penetration <= 0)
         {

@@ -9,7 +9,7 @@ public class CircleHull2D : CollisionHull2D
 
     public void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
+        Gizmos.color = drawColor;
         Vector2 lastPos = new Vector2(radius, 0) + position;
         //draw each segment, added 0.01f to make sure any float errors dont affect it and the final side is drawn
         for (float theta = Mathf.PI * 0.1f; theta <= (Mathf.PI * 2) + 0.01f; theta += Mathf.PI * 0.1f)

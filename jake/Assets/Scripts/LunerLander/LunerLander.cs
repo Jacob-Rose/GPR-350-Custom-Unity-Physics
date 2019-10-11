@@ -63,4 +63,9 @@ public class LunerLander : OBBHull2D
 
         fuelText.text = "Fuel Left: " + fuel.ToString("F1");
     }
+
+    public override void OnCollision(CollisionHull2D withObject)
+    {
+        base.OnCollision(withObject);
+    }
 }

@@ -34,7 +34,7 @@ public class OBBHull2D : CollisionHull2D
 
     public void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
+        Gizmos.color = drawColor;
         Gizmos.DrawLine(getBottomLeftPos(), getBottomRightPos());
         Gizmos.DrawLine(getBottomLeftPos(), getTopLeftPos());
         Gizmos.DrawLine(getTopLeftPos(), getTopRightPos());

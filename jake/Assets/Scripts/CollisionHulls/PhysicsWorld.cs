@@ -33,7 +33,9 @@ public class PhysicsWorld : MonoBehaviour
                 HullCollision2D collision = mPhysicsObjects[i].detectCollisionResponse(mPhysicsObjects[j]);
                 if (collision != null)
                 {
-                    collision.Resolve(Time.deltaTime);
+                    collision.Resolve();
+                    collision.a.OnCollision(collision.b);
+                    collision.b.OnCollision(collision.a);
                     
                     Debug.Log("Collision Occured between " + mPhysicsObjects[i].gameObject.name + " " + mPhysicsObjects[j].gameObject.name);
                 }

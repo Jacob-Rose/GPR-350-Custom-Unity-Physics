@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class CollisionHull2D : Particle2D
 {
+    public Color drawColor;
     public override void Start()
     {
         base.Start();
@@ -14,6 +15,11 @@ public abstract class CollisionHull2D : Particle2D
     public abstract HullCollision2D detectCollisionResponse(CollisionHull2D other);
 
     public abstract Vector2 GetClosestPoint(Vector2 point);
+
+    public virtual void OnCollision(CollisionHull2D withObject)
+    {
+        //if any want a trigger on collision
+    }
 
     /*
      * Circle V Circle
@@ -54,6 +60,7 @@ public abstract class CollisionHull2D : Particle2D
         }
         return false;
     }
+    /*WORKING*/
     public static HullCollision2D detectCollisionResponse(CircleHull2D circle, AABBHull2D square)
     {
         float dist = Vector2.Distance(circle.position, square.GetClosestPoint(circle.position));
@@ -63,25 +70,18 @@ public abstract class CollisionHull2D : Particle2D
         if (circle.radius > dist)
         {
             
-            Vector2 penNorm = squareClosestPoint - circleClosestPoint;
-            if(penNorm[0] > penNorm[1])
+            Vector2 pen = squareClosestPoint - circleClosestPoint;
+            Vector2 penNorm = pen.normalized;
+            if(penNorm.x > penNorm.y)
             {
-                penNorm[1] = 0.0f;
+                pen.y = 0.0f;
             }
             else
             {
-                penNorm[0] = 0.0f;
+                pen.x = 0.0f;
             }
             HullCollision2D collision;
-            if (Vector3.Dot(circle.velocity, penNorm) > 0.0f)
-            {
-                collision = new HullCollision2D(circle, square, penNorm.normalized, penNorm.magnitude);
-            }
-            else
-            {
-                collision = new HullCollision2D(circle, square, penNorm.normalized, penNorm.magnitude);
-            }
-            
+            collision = new HullCollision2D(circle, square, penNorm.normalized, pen.magnitude);
             return collision;
         }
         return null;
@@ -151,6 +151,9 @@ public abstract class CollisionHull2D : Particle2D
 
     public static HullCollision2D detectCollisionResponse(AABBHull2D a, AABBHull2D b)
     {
+        Vector2 aClosestPoint = a.GetClosestPoint(b.position);
+        Vector2 bClosestPoint = b.GetClosestPoint(a.position);
+        Debug.DrawLine(aClosestPoint, bClosestPoint);
         for (int i = 0; i < 2; i++) //do for each axis
         {
             Vector2 minMaxA = new Vector2(a.position[i] - a.halfLength[i], a.position[i] + a.halfLength[i]);
@@ -160,18 +163,22 @@ public abstract class CollisionHull2D : Particle2D
                 return null;
             }
         }
-        Vector2 aClosestPoint = a.GetClosestPoint(b.position);
-        Vector2 bClosestPoint = b.GetClosestPoint(a.position);
-        Vector2 penNorm = bClosestPoint - aClosestPoint;
+        
+        Vector2 pen = bClosestPoint - aClosestPoint;
+        Vector2 penNorm = pen.normalized;
+        
         if (penNorm[0] > penNorm[1])
         {
-            penNorm[1] = 0.0f;
+            pen[1] = 0.0f;
         }
         else
         {
-            penNorm[0] = 0.0f;
+            pen[0] = 0.0f;
         }
-        return new HullCollision2D(a, b, penNorm.normalized, penNorm.magnitude);
+        HullCollision2D collision;
+        collision = new HullCollision2D(a, b, penNorm.normalized, pen.magnitude);
+
+        return collision;
     }
 
     /*
@@ -191,17 +198,35 @@ public abstract class CollisionHull2D : Particle2D
 
     public static HullCollision2D detectCollisionResponse(OBBHull2D a, AABBHull2D b)
     {
-        if (checkAxis(a, b, a.getXNormal()) &&
-            checkAxis(a, b, a.getYNormal()) &&
-            checkAxis(a, b, Vector2.left) &&
-            checkAxis(a, b, Vector2.up))
+        Dictionary<Vector2, float> axisValues = new Dictionary<Vector2, float>(); //norm to the overlap value
+        axisValues.Add(Vector2.up, checkAxisPenetration(a, b, Vector2.up));
+        axisValues.Add(Vector2.right, checkAxisPenetration(a, b, Vector2.right));
+        if (a.rotation != 0.0f)
         {
-            Vector2 bClosestPoint = b.GetClosestPoint(a.position);
-            Vector2 aClosestPoint = a.GetClosestPoint(bClosestPoint);
-            HullCollision2D collision = new HullCollision2D(a, b);
-            return collision;
+            axisValues.Add(a.getXNormal(), checkAxisPenetration(a, b, a.getXNormal()));
+            axisValues.Add(a.getYNormal(), checkAxisPenetration(a, b, a.getYNormal()));
         }
-        return null;
+        Dictionary<Vector2, float>.Enumerator enumerator = axisValues.GetEnumerator();
+        enumerator.MoveNext();
+        KeyValuePair<Vector2, float> bestPenetration = enumerator.Current; //need to set one to compare too, no null value to just allow all checking in the for loop
+        if (bestPenetration.Value == 0.0f)
+        {
+            return null;
+        }
+        while (enumerator.MoveNext())
+        {
+            if (Mathf.Abs(enumerator.Current.Value) < Mathf.Abs(bestPenetration.Value))
+            {
+                bestPenetration = enumerator.Current;
+            }
+            else if (bestPenetration.Value == 0.0f)
+            {
+                return null;
+            }
+        }
+        HullCollision2D collision;
+        collision = new HullCollision2D(a, b, bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
+        return collision;
     }
 
 
@@ -223,39 +248,35 @@ public abstract class CollisionHull2D : Particle2D
 
     public static HullCollision2D detectCollisionResponse(OBBHull2D a, OBBHull2D b)
     {
-        //check each axis on each side, need to make better
-        if (checkAxis(a, b, a.getXNormal()) &&
-            checkAxis(a, b, a.getYNormal()) &&
-            checkAxis(a, b, b.getXNormal()) &&
-            checkAxis(a, b, b.getYNormal()))
+        Dictionary<Vector2, float> axisValues = new Dictionary<Vector2, float>(); //norm to the overlap value
+        axisValues.Add(a.getXNormal(), checkAxisPenetration(a, b, a.getXNormal()));
+        axisValues.Add(a.getYNormal(), checkAxisPenetration(a, b, a.getYNormal()));
+        if (a.rotation != b.rotation)
         {
-            Vector2 aClosestPoint = a.GetClosestPoint(b.position);
-            Vector2 bClosestPoint = b.GetClosestPoint(a.position);
-            Vector2 middle = Vector2.Lerp(a.position, b.position, 0.5f);
-            aClosestPoint = a.GetClosestPoint(middle);
-            bClosestPoint = b.GetClosestPoint(middle);
-            Debug.DrawLine(aClosestPoint, bClosestPoint, Color.green);
-            Vector2 penNorm = aClosestPoint - bClosestPoint;
-            if (penNorm[0] > penNorm[1])
-            {
-                penNorm[1] = 0.0f;
-            }
-            else
-            {
-                penNorm[0] = 0.0f;
-            }
-            HullCollision2D collision;
-            if (penNorm.x > 0.0f)
-            {
-                collision = new HullCollision2D(a, b, a.getXNormal(), penNorm.magnitude);
-            }
-            else
-            {
-                collision = new HullCollision2D(a, b, a.getYNormal(), penNorm.magnitude);
-            }
-            return collision;
+            axisValues.Add(b.getXNormal(), checkAxisPenetration(a, b, b.getXNormal()));
+            axisValues.Add(b.getYNormal(), checkAxisPenetration(a, b, b.getYNormal()));
         }
-        return null;
+        Dictionary<Vector2, float>.Enumerator enumerator = axisValues.GetEnumerator();
+        enumerator.MoveNext();
+        KeyValuePair<Vector2, float> bestPenetration = enumerator.Current; //need to set one to compare too, no null value to just allow all checking in the for loop
+        if(bestPenetration.Value == 0.0f)
+        {
+            return null;
+        }
+        while (enumerator.MoveNext())
+        {
+            if (Mathf.Abs(enumerator.Current.Value) < Mathf.Abs(bestPenetration.Value))
+            {
+                bestPenetration = enumerator.Current;
+            }
+            else if(enumerator.Current.Value == 0.0f)
+            {
+                return null;
+            }
+        }
+        HullCollision2D collision;
+        collision = new HullCollision2D(a, b, bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
+        return collision;
     }
 
     public static bool checkAxis(OBBHull2D a, OBBHull2D b, Vector2 norm)
@@ -266,6 +287,40 @@ public abstract class CollisionHull2D : Particle2D
         Debug.DrawLine(bProjValues.x * norm, bProjValues.y * norm, Color.red);//this is dumb useful, the projected line
 
         return detectCollisionFromMinMax(aProjValues, bProjValues);
+    }
+
+    public static float checkAxisPenetration(OBBHull2D a, OBBHull2D b, Vector2 norm)
+    {
+        Vector2 aProjValues = getMinMaxProjectionValuesOnNorm(a, norm);
+        Vector2 bProjValues = getMinMaxProjectionValuesOnNorm(b, norm);
+        Debug.DrawLine(aProjValues.x * norm, aProjValues.y * norm, Color.blue); //this is dumb useful, the projected line
+        Debug.DrawLine(bProjValues.x * norm, bProjValues.y * norm, Color.red);//this is dumb useful, the projected line
+
+        if(! detectCollisionFromMinMax(aProjValues, bProjValues))
+        {
+            return 0.0f;
+        }
+        else
+        {
+            return calculateMinMaxCollisionOverlap(aProjValues, bProjValues);
+        }
+    }
+
+    public static float checkAxisPenetration(OBBHull2D a, AABBHull2D b, Vector2 norm)
+    {
+        Vector2 aProjValues = getMinMaxProjectionValuesOnNorm(a, norm);
+        Vector2 bProjValues = getMinMaxProjectionValuesOnNorm(b, norm);
+        Debug.DrawLine(aProjValues.x * norm, aProjValues.y * norm, Color.blue); //this is dumb useful, the projected line
+        Debug.DrawLine(bProjValues.x * norm, bProjValues.y * norm, Color.red);//this is dumb useful, the projected line
+
+        if (!detectCollisionFromMinMax(aProjValues, bProjValues))
+        {
+            return 0.0f;
+        }
+        else
+        {
+            return calculateMinMaxCollisionOverlap(aProjValues, bProjValues);
+        }
     }
 
     public static bool checkAxis(OBBHull2D a, AABBHull2D b, Vector2 norm)
