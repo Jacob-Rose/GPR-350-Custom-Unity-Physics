@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class LunerLander : CircleHull2D
+public class LunerLander : OBBHull2D
 {
     public Sprite[] sprites;
     public float fuel = 100.0f;
     public float fuelConsumptionPerAcceleration = 100.0f;
+    public float rotationCorrectionForce = 2.0f;
 
     public float maxThrust = 10.0f;
     public float timeToMaxThrust = 2.0f;
@@ -60,12 +61,21 @@ public class LunerLander : CircleHull2D
             GetComponentInChildren<SpriteRenderer>().sprite = sprites[0];
         }
         addForce(ForceGenerator2D.GenerateForce_Gravity(Mass, -0.8f, Vector2.up));
-
+        
         fuelText.text = "Fuel Left: " + fuel.ToString("F1");
     }
 
     public override void OnCollision(CollisionHull2D withObject)
     {
-        base.OnCollision(withObject);
+        //all collisions happen below, so if collision occured then lerp the rotation
+        addForce(ForceGenerator2D.GenerateForce_Friction_Kinetic(withObject.transform.up, velocity, 2.0f));
+        if (rotation > 0.0f)
+        {
+            torque -= rotationCorrectionForce;
+        }
+        else if (rotation < 0.0f)
+        {
+            torque += rotationCorrectionForce;
+        }
     }
 }

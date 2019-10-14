@@ -516,13 +516,14 @@ MonoBehaviour:
   restitution: 0.5
   physicsIterations: 2
   drawColor: {r: 1, g: 0.43697512, b: 0, a: 1}
-  radius: 0.7
+  halfLength: {x: 0.5, y: 0.5}
   sprites:
   - {fileID: -5678013544975218939, guid: 484e4f712388b534d8224e1a4ca92c3e, type: 3}
   - {fileID: -1256907973708472287, guid: 484e4f712388b534d8224e1a4ca92c3e, type: 3}
   - {fileID: 1034531438737323955, guid: 484e4f712388b534d8224e1a4ca92c3e, type: 3}
   fuel: 100
   fuelConsumptionPerAcceleration: 2
+  rotationCorrectionForce: 200
   maxThrust: 5
   timeToMaxThrust: 0.01
   currentThrust: 0

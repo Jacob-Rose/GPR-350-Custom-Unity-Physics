@@ -110,22 +110,14 @@ public abstract class CollisionHull2D : Particle2D
         {
             
             Vector2 penNorm = closestPointSquare- closestPointCircle;
-            if (penNorm[0] > penNorm[1])
-            {
-                penNorm[1] = 0.0f;
-            }
-            else
-            {
-                penNorm[0] = 0.0f;
-            }
             HullCollision2D collision;
             if (penNorm.x > 0.0f)
             {
-                collision = new HullCollision2D(circle, square, square.getXNormal(), penNorm.magnitude);
+                collision = new HullCollision2D(circle, square, penNorm.normalized, penNorm.magnitude);
             }
             else
             {
-                collision = new HullCollision2D(circle, square, square.getYNormal(), penNorm.magnitude);
+                collision = new HullCollision2D(circle, square, penNorm.normalized, penNorm.magnitude);
             }
             return collision;
         }
@@ -221,7 +213,12 @@ public abstract class CollisionHull2D : Particle2D
             }
         }
         HullCollision2D collision;
-        collision = new HullCollision2D(a, b, -bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
+        Vector2 norm = bestPenetration.Key;
+        if(Vector2.Dot(norm, a.velocity) > 0.0f)
+        {
+            norm *= -1.0f;
+        }
+        collision = new HullCollision2D(a, b, norm, Mathf.Abs(bestPenetration.Value));
         return collision;
     }
 
@@ -254,8 +251,9 @@ public abstract class CollisionHull2D : Particle2D
         }
         Dictionary<Vector2, float>.Enumerator enumerator = axisValues.GetEnumerator();
         enumerator.MoveNext();
+        Vector2 pos = a.position;
         KeyValuePair<Vector2, float> bestPenetration = enumerator.Current; //need to set one to compare too, no null value to just allow all checking in the for loop
-        if(bestPenetration.Value == 0.0f)
+        if (bestPenetration.Value == 0.0f)
         {
             return null;
         }
@@ -265,13 +263,14 @@ public abstract class CollisionHull2D : Particle2D
             {
                 bestPenetration = enumerator.Current;
             }
-            else if(enumerator.Current.Value == 0.0f)
+            if (bestPenetration.Value == 0.0f)
             {
                 return null;
             }
         }
         HullCollision2D collision;
         collision = new HullCollision2D(a, b, bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
+        //collision.contactPoint = pos;
         return collision;
     }
 

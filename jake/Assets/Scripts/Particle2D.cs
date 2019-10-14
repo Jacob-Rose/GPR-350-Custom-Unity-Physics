@@ -36,10 +36,10 @@ public class Particle2D : MonoBehaviour
         get { return invMass; }
     }
 
-    private float invMass;
-    private float startTime;
-    private float torque;
-    private float inertia;
+    protected float invMass;
+    protected float startTime;
+    protected float torque;
+    protected float inertia;
     public enum PhysicsType
     {
         Kinematic,
