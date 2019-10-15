@@ -214,10 +214,14 @@ public abstract class CollisionHull2D : Particle2D
         }
         HullCollision2D collision;
         Vector2 norm = bestPenetration.Key;
-        if(Vector2.Dot(norm, a.velocity) > 0.0f)
+        
+        
+        if(Vector2.Dot(a.velocity, norm) >= 0.0f)
         {
             norm *= -1.0f;
         }
+        
+        
         collision = new HullCollision2D(a, b, norm, Mathf.Abs(bestPenetration.Value));
         return collision;
     }
@@ -269,7 +273,13 @@ public abstract class CollisionHull2D : Particle2D
             }
         }
         HullCollision2D collision;
-        collision = new HullCollision2D(a, b, bestPenetration.Key, Mathf.Abs(bestPenetration.Value));
+        Vector2 norm = bestPenetration.Key;
+        if (bestPenetration.Value <= 0.0f) //ooh this was an easy thing to miss
+        {
+            norm *= -1.0f;
+        }
+
+        collision = new HullCollision2D(a, b, norm, Mathf.Abs(bestPenetration.Value));
         //collision.contactPoint = pos;
         return collision;
     }

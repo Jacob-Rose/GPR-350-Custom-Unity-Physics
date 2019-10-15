@@ -13,6 +13,8 @@ public class LunerLander : OBBHull2D
     public float maxThrust = 10.0f;
     public float timeToMaxThrust = 2.0f;
 
+    public float maxVelocityMagnitudeOnLanding = 4.0f;
+
     public float currentThrust = 0.0f;
 
     public TextMeshProUGUI fuelText;
@@ -67,15 +69,28 @@ public class LunerLander : OBBHull2D
 
     public override void OnCollision(CollisionHull2D withObject)
     {
+        if(velocity.magnitude > maxVelocityMagnitudeOnLanding)
+        {
+            LoseGame();
+        }
         //all collisions happen below, so if collision occured then lerp the rotation
         addForce(ForceGenerator2D.GenerateForce_Friction_Kinetic(withObject.transform.up, velocity, 2.0f));
-        if (rotation > 0.0f)
+        if (rotation > 5.0f)
         {
-            torque -= rotationCorrectionForce;
+            torque = -rotationCorrectionForce * (rotation/360);
         }
-        else if (rotation < 0.0f)
+        else if (rotation < -5.0f)
         {
-            torque += rotationCorrectionForce;
+            torque = rotationCorrectionForce * (-rotation / 360);
         }
+        else 
+        { 
+            torque = -rotation * rotationCorrectionForce * Time.deltaTime;
+        }
+    }
+
+    public void LoseGame()
+    {
+        //TODO
     }
 }

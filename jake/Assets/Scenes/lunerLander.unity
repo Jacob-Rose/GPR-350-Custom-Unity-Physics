@@ -176,7 +176,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 79fd1ae780478ed4ca03592d9a1f5d9c, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6431373}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -194,11 +194,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8381704}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.36, y: 2.18, z: 0}
+  m_LocalPosition: {x: 9.4, y: 4.46, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &75698496
 GameObject:
@@ -241,7 +241,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &253502652
 GameObject:
@@ -255,7 +255,7 @@ GameObject:
   - component: {fileID: 253502655}
   - component: {fileID: 253502654}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: BGPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -319,7 +319,7 @@ Transform:
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 270, y: 0, z: 0}
 --- !u!1 &350827487
 GameObject:
@@ -365,7 +365,7 @@ MonoBehaviour:
   restitution: 0.5
   physicsIterations: 2
   drawColor: {r: 1, g: 0, b: 0.8455281, a: 1}
-  halfLength: {x: 10, y: 1}
+  halfLength: {x: 20, y: 1}
 --- !u!4 &350827489
 Transform:
   m_ObjectHideFlags: 0
@@ -374,7 +374,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 350827487}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3, z: 0}
+  m_LocalPosition: {x: 0, y: -7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1728228977}
@@ -513,7 +513,7 @@ MonoBehaviour:
   inertiaVar1: 1
   inertiaVar2: 1
   shouldForceAtPointMove: 1
-  restitution: 0.5
+  restitution: 0.1
   physicsIterations: 2
   drawColor: {r: 1, g: 0.43697512, b: 0, a: 1}
   halfLength: {x: 0.5, y: 0.5}
@@ -526,6 +526,7 @@ MonoBehaviour:
   rotationCorrectionForce: 200
   maxThrust: 5
   timeToMaxThrust: 0.01
+  maxVelocityMagnitudeOnLanding: 4
   currentThrust: 0
   fuelText: {fileID: 1950204656}
   torquePower: 50
@@ -542,7 +543,7 @@ Transform:
   m_Children:
   - {fileID: 1360079809}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1360079808
 GameObject:
@@ -717,72 +718,13 @@ RectTransform:
   m_Children:
   - {fileID: 1950204655}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1449894203
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1449894205}
-  - component: {fileID: 1449894204}
-  m_Layer: 0
-  m_Name: AABB (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1449894204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449894203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2445d1dd6dee48498dcfa94f837d50e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startMass: 0
-  dampening: 0.8
-  position: {x: 6, y: -1}
-  rotation: 0
-  angularAcceleration: 0
-  velocity: {x: 0, y: 0}
-  acceleration: {x: 0, y: 0}
-  calculationType: 0
-  shapeType: 0
-  inertiaVar1: 0
-  inertiaVar2: 0
-  shouldForceAtPointMove: 1
-  restitution: 0.5
-  physicsIterations: 2
-  drawColor: {r: 0.9716981, g: 0, b: 0.76003987, a: 1}
-  halfLength: {x: 2, y: 0.5}
---- !u!4 &1449894205
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449894203}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1728228976
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,7 +751,7 @@ Transform:
   m_GameObject: {fileID: 1728228976}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 2, z: 1}
+  m_LocalScale: {x: 40, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 350827489}
   m_RootOrder: 0
@@ -851,7 +793,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: a6cf40e74f7ae2c49b06c873e95ebf74, type: 3}
   m_Color: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
   m_FlipX: 0
@@ -863,65 +805,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1763584800
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1763584802}
-  - component: {fileID: 1763584801}
-  m_Layer: 0
-  m_Name: AABB (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1763584801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1763584800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2445d1dd6dee48498dcfa94f837d50e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startMass: 0
-  dampening: 0.8
-  position: {x: 0.04, y: 1.21}
-  rotation: 0
-  angularAcceleration: 0
-  velocity: {x: 0, y: 0}
-  acceleration: {x: 0, y: 0}
-  calculationType: 0
-  shapeType: 0
-  inertiaVar1: 0
-  inertiaVar2: 0
-  shouldForceAtPointMove: 1
-  restitution: 0.5
-  physicsIterations: 2
-  drawColor: {r: 0.9716981, g: 0, b: 0.76003987, a: 1}
-  halfLength: {x: 2, y: 0.5}
---- !u!4 &1763584802
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1763584800}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1950204654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,7 +1004,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2029591433
 GameObject:
@@ -1174,7 +1057,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 83
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1270,5 +1153,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

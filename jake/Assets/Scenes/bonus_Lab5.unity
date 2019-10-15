@@ -576,7 +576,7 @@ MonoBehaviour:
   position: {x: -3.27, y: 1}
   rotation: 0
   angularAcceleration: 0
-  velocity: {x: 0, y: 0}
+  velocity: {x: 3.14, y: 0}
   acceleration: {x: 0, y: 0}
   calculationType: 0
   shapeType: 0
