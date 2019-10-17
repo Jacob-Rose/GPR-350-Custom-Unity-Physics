@@ -34,11 +34,14 @@ public class OBBHull2D : CollisionHull2D
 
     public void OnDrawGizmos()
     {
+        Vector2 offset = Vector3.zero;
+        if (!Application.isPlaying)
+            offset = new Vector2(transform.position.x, transform.position.y);
         Gizmos.color = drawColor;
-        Gizmos.DrawLine(getBottomLeftPos(), getBottomRightPos());
-        Gizmos.DrawLine(getBottomLeftPos(), getTopLeftPos());
-        Gizmos.DrawLine(getTopLeftPos(), getTopRightPos());
-        Gizmos.DrawLine(getTopRightPos(), getBottomRightPos());
+        Gizmos.DrawLine(getBottomLeftPos() + offset, getBottomRightPos()+offset);
+        Gizmos.DrawLine(getBottomLeftPos()+offset, getTopLeftPos()+offset);
+        Gizmos.DrawLine(getTopLeftPos()+offset, getTopRightPos()+offset);
+        Gizmos.DrawLine(getTopRightPos()+offset, getBottomRightPos()+offset);
     }
 
     //to find the closest point was very difficult, so i got the code from 

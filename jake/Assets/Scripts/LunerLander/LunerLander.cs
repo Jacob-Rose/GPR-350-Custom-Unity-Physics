@@ -5,6 +5,9 @@ using TMPro;
 
 public class LunerLander : OBBHull2D
 {
+    private Vector2 startVelocity;
+    private Vector2 startPosition;
+    private float startRotation;
     public Sprite[] sprites;
     public float fuel = 100.0f;
     public float fuelConsumptionPerAcceleration = 100.0f;
@@ -14,22 +17,61 @@ public class LunerLander : OBBHull2D
     public float timeToMaxThrust = 2.0f;
 
     public float maxVelocityMagnitudeOnLanding = 4.0f;
+    public float maxVelocityMagnitudeOnSafeLanding = 2.0f;
+    public float maxRotationOffsetOnLanding = 4.0f;
 
     public float currentThrust = 0.0f;
 
-    public TextMeshProUGUI fuelText;
 
+    public override void Start()
+    {
+        base.Start();
+        startPosition = position;
+        startVelocity = velocity;
+        startRotation = rotation;
+    }
     public float torquePower = 2.0f;
     // Start is called before the first frame update
 
     // Update is called once per frame
     public override void FixedUpdate()
     {
-        HandleUpdate(Time.fixedDeltaTime);
-        base.FixedUpdate();
+        if(!LunerGameManager.Instance.HasGameStarted)
+        {
+            return;
+        }
+        if(!LunerGameManager.Instance.IsTransitioning || LunerGameManager.Instance.HasGameEnded)
+        {
+            if (!LunerGameManager.Instance.HasGameEnded)
+            {
+                HandleInput(Time.fixedDeltaTime);
+            }
+            addForce(ForceGenerator2D.GenerateForce_Gravity(Mass, -0.8f, Vector2.up));
+            base.FixedUpdate();
+            CheckRotation(Time.fixedDeltaTime);
+            HandleUpdate(Time.fixedDeltaTime);
+            
+        }
+        
+        
+
+        if (fuel <= 0.0f)
+        {
+            LunerGameManager.Instance.EndGame();
+        }
     }
 
-    public void HandleUpdate(float deltaTime)
+    public void CheckRotation(float deltaTime)
+    {
+        if (rotation + (angularVelocity* deltaTime) > 90.0f || rotation + (angularVelocity* deltaTime) < -90.0f)
+        {
+            angularVelocity = 0.0f;
+            rotation = Mathf.Clamp(rotation + (angularVelocity*deltaTime), -90.0f, 90.0f);
+        }
+    }
+
+
+    public void HandleInput(float deltaTime)
     {
         if (Input.GetKey(KeyCode.A)) //rotate right
         {
@@ -50,28 +92,56 @@ public class LunerLander : OBBHull2D
             currentThrust -= (maxThrust / timeToMaxThrust) * deltaTime * 2;
         }
         currentThrust = Mathf.Clamp(currentThrust, 0.0f, maxThrust);
-        if(currentThrust > 0.0f)
-        {
-            GetComponentInChildren<SpriteRenderer>().sprite = sprites[1];
-        }
-        else if(currentThrust > maxThrust * 0.5f)
+        
+    }
+    public void HandleUpdate(float deltaTime)
+    {
+        
+        if(currentThrust > maxThrust * 0.5f)
         {
             GetComponentInChildren<SpriteRenderer>().sprite = sprites[2];
+        }
+        else if(currentThrust > 0.0f)
+        {
+            GetComponentInChildren<SpriteRenderer>().sprite = sprites[1];
         }
         else
         {
             GetComponentInChildren<SpriteRenderer>().sprite = sprites[0];
         }
-        addForce(ForceGenerator2D.GenerateForce_Gravity(Mass, -0.8f, Vector2.up));
+
+        //var emmision = GetComponentInChildren<ParticleSystem>().emission;
+        //emmision.rateOverTime = new ParticleSystem.MinMaxCurve(40.0f * (currentThrust / maxThrust));
         
-        fuelText.text = "Fuel Left: " + fuel.ToString("F1");
     }
 
     public override void OnCollision(CollisionHull2D withObject)
     {
-        if(velocity.magnitude > maxVelocityMagnitudeOnLanding)
+        if(LunerGameManager.Instance.HasGameEnded)
         {
-            LoseGame();
+            return;
+        }
+        if(velocity.magnitude > maxVelocityMagnitudeOnLanding || rotation < -maxRotationOffsetOnLanding || rotation > maxRotationOffsetOnLanding)
+        {
+            LunerGameManager.Instance.ShowTransitionMessage("Game Over");
+            LunerGameManager.Instance.EndGame();
+        }
+        else if(withObject is LunerPlatform)
+        {
+            if(velocity.magnitude > maxVelocityMagnitudeOnSafeLanding)
+            {
+                LunerPlatform collidedWith = withObject as LunerPlatform;
+                LunerGameManager.Instance.addToScore(collidedWith.score);
+                ResetAndShowMessage("Shakey landing, but there in one piece");
+            }
+            else
+            {
+                LunerPlatform collidedWith = withObject as LunerPlatform;
+                LunerGameManager.Instance.addToScore(collidedWith.score * 1.5f);
+                fuel += collidedWith.fuelGained;
+                ResetAndShowMessage("Clean Landing, gained fuel and bonus points");
+            }
+            
         }
         //all collisions happen below, so if collision occured then lerp the rotation
         addForce(ForceGenerator2D.GenerateForce_Friction_Kinetic(withObject.transform.up, velocity, 2.0f));
@@ -89,8 +159,22 @@ public class LunerLander : OBBHull2D
         }
     }
 
+    public void ResetAndShowMessage(string message)
+    {
+        LunerGameManager.Instance.ShowTransitionMessage(message);
+        ResetGame();
+    }
+
     public void LoseGame()
     {
         //TODO
+
+    }
+
+    public void ResetGame()
+    {
+        position = startPosition;
+        velocity = startVelocity;
+        rotation = startRotation;
     }
 }

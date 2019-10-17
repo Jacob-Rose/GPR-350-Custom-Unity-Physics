@@ -9,11 +9,12 @@ public class Particle2D : MonoBehaviour
     public float dampening = 0.8f;
     public Vector2 position;
     public float rotation;
-    private float angularVelocity;
+    protected float angularVelocity;
     public float angularAcceleration;
     public Vector2 velocity;
     public Vector2 acceleration;
-    public PhysicsType calculationType;
+    public PhysicsType positionCalculationType;
+    public PhysicsType rotationCalculationType;
     public ShapeType shapeType;
     [Tooltip("Circle = Radius, Ring = OuterRadius, Rectangle = XLength, Line = length")]
     public float inertiaVar1;
@@ -60,6 +61,7 @@ public class Particle2D : MonoBehaviour
         Mass = startMass;
         inertia = calculateInertia();
         position = transform.position + new Vector3(position.x, position.y, 0);
+        rotation = transform.rotation.eulerAngles.z + rotation;
     }
 
     private float calculateInertia()
@@ -155,16 +157,15 @@ public class Particle2D : MonoBehaviour
         float fractionTime = Time.fixedDeltaTime / physicsIterations;
         for (int i = 0; i < physicsIterations; i++)
         {
-            if (calculationType == PhysicsType.Kinematic)
-            {
-                updatePositionKinematic(fractionTime);
-                updateRotationKinematic(fractionTime);
-            }
+            if (positionCalculationType == PhysicsType.Kinematic)
+            {  updatePositionKinematic(fractionTime); }
             else
-            {
-                updatePositionEulerExplicit(fractionTime);
-                updateRotationEulerExplicit(fractionTime);
-            }
+            {  updatePositionEulerExplicit(fractionTime); }
+
+            if(rotationCalculationType == PhysicsType.Kinematic)
+            {  updateRotationKinematic(fractionTime);  }
+            else
+            {  updateRotationEulerExplicit(fractionTime); }
         }
         updateAngularAcceleration();
         //acceleration stuff
