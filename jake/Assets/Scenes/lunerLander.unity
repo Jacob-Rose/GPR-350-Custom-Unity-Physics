@@ -1155,6 +1155,7 @@ MonoBehaviour:
   maxVelocityMagnitudeOnSafeLanding: 0.5
   maxRotationOffsetOnLanding: 5
   currentThrust: 0
+  rotationDamp: 0.4
   torquePower: 100
 --- !u!4 &1167423587
 Transform:
