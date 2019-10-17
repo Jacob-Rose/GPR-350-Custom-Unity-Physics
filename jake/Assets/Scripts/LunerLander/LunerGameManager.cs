@@ -63,9 +63,37 @@ public class LunerGameManager : MonoBehaviour
         
 
         fuelText.text = "Fuel Left: " + lander.fuel.ToString("F1");
+        if(lander.fuel < 20.0f)
+        {
+            fuelText.color = Color.yellow;
+        }
+        else
+        {
+            fuelText.color = Color.white;
+        }
         scoreText.text = "Score: " + Score.ToString("F1");
         velocityText.text = "Velocity: " + lander.velocity.magnitude.ToString("F2");
+        if(lander.velocity.magnitude > lander.maxVelocityMagnitudeOnLanding)
+        {
+            velocityText.color = Color.red;
+        }
+        else if (lander.velocity.magnitude > lander.maxVelocityMagnitudeOnSafeLanding)
+        {
+            velocityText.color = Color.yellow;
+        }
+        else
+        {
+            velocityText.color = Color.white;
+        }
         rotationText.text = "Rotation: " + lander.rotation.ToString("F2");
+        if (lander.rotation > lander.maxRotationOffsetOnLanding || lander.rotation < -lander.maxRotationOffsetOnLanding)
+        {
+            rotationText.color = Color.red;
+        }
+        else
+        {
+            rotationText.color = Color.white;
+        }
     }
 
     public void StartGame()

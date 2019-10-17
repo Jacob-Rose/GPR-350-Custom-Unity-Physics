@@ -21,6 +21,7 @@ public class LunerLander : OBBHull2D
     public float maxRotationOffsetOnLanding = 4.0f;
 
     public float currentThrust = 0.0f;
+    public float rotationDamp = 0.8f;
 
 
     public override void Start()
@@ -52,7 +53,7 @@ public class LunerLander : OBBHull2D
             HandleUpdate(Time.fixedDeltaTime);
             
         }
-        
+
         
 
         if (fuel <= 0.0f)
@@ -73,13 +74,16 @@ public class LunerLander : OBBHull2D
 
     public void HandleInput(float deltaTime)
     {
+        bool turning = false;
         if (Input.GetKey(KeyCode.A)) //rotate right
         {
             angularAcceleration += torquePower; //angularAcceleration already uses mass and time in calculation
+            turning = true;
         }
         if (Input.GetKey(KeyCode.D))
         {
             angularAcceleration -= torquePower;
+            turning = true;
         }
         if (Input.GetKey(KeyCode.W))
         {
@@ -90,6 +94,10 @@ public class LunerLander : OBBHull2D
         else
         {
             currentThrust -= (maxThrust / timeToMaxThrust) * deltaTime * 2;
+        }
+        if(!turning)
+        {
+            angularAcceleration *= rotationDamp;
         }
         currentThrust = Mathf.Clamp(currentThrust, 0.0f, maxThrust);
         
