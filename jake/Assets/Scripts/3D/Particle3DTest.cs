@@ -12,6 +12,8 @@ public class Particle3DTest : Particle3D
         AddForce(gravForce);
         Vector3 normForce = ForceGenerator3D.GenerateForce_Normal(gravForce, surfNorm);
         AddForce(normForce);
+        Vector3 frictionForce = ForceGenerator3D.GenerateForce_Friction_Static(surfNorm, -surfNorm, 0.8f);
+        //AddForceAtPoint(frictionForce);
         base.FixedUpdate();
     }
 }

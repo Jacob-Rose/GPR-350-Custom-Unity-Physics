@@ -46,7 +46,7 @@ public class Particle3D : MonoBehaviour
     public Vector3 centerOfMassLocalSpace = Vector3.zero;
 
 
-    protected float m_InverseMass;
+    public float m_InverseMass { get; private set; }
     public float Mass
     {
         set { m_InverseMass = value > 0.0f ? 1.0f / value : 0.0f; }
@@ -55,10 +55,11 @@ public class Particle3D : MonoBehaviour
 
     public int physicsIterations = 2;
 
-    public void Start()
+    public virtual void Start()
     {
         Mass = m_StartMass;
         m_InvInertiaLocalSpace = getInertiaTensorMatrix().inverse;
+        transform.position += m_Position;
     }
 
     public Matrix4x4 getInertiaTensorMatrix()
@@ -165,8 +166,8 @@ public class Particle3D : MonoBehaviour
 
         m_InvInertiaWorldSpace = m_ObjectToWorldTransform * m_InvInertiaLocalSpace * m_WorldToObjectTransform;
 
-        Vector4 centerRelativeWorld = (m_ObjectToWorldTransform * m_CenterOfMass);
-        m_CenterOfMassWorld = new Vector3(centerRelativeWorld.x, centerRelativeWorld.y, centerRelativeWorld.z) + m_Position;
+        Vector4 centerRelativeWorld = m_ObjectToWorldTransform.MultiplyPoint(m_CenterOfMass);
+        m_CenterOfMassWorld = new Vector3(centerRelativeWorld.x, centerRelativeWorld.y, centerRelativeWorld.z);
         updateAcceleration();
         updateAngularAcceleration();
         m_AngularVelocity += m_AngularAcceleration * Time.fixedDeltaTime;

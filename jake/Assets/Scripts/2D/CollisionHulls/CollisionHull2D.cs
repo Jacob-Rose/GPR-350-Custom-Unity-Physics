@@ -8,7 +8,7 @@ public abstract class CollisionHull2D : Particle2D
     public override void Start()
     {
         base.Start();
-        PhysicsWorld.instance.addObject(this);
+        PhysicsWorld2D.instance.addObject(this);
         
     }
     public abstract bool detectCollision(CollisionHull2D other);

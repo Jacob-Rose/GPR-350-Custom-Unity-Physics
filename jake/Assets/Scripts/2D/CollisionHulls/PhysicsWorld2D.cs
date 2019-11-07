@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsWorld : MonoBehaviour
+public class PhysicsWorld2D : MonoBehaviour
 {
-    public static PhysicsWorld instance;
+    public static PhysicsWorld2D instance;
 
     public List<CollisionHull2D> mPhysicsObjects = new List<CollisionHull2D>();
 
@@ -20,8 +20,6 @@ public class PhysicsWorld : MonoBehaviour
         }
     }
     
-
-    // Update is called once per frame
     void FixedUpdate()
     {
 
