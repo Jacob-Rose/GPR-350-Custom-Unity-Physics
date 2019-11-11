@@ -33,6 +33,13 @@ public class SphereHull3D : CollisionHull3D
         return m_Position + (dir * m_Radius);
     }
 
+    public override Vector2 getMinMaxProjectionValuesOnNorm(Vector3 norm)
+    {
+        int axis = norm.x != 0 ? 0 : norm.y != 0 ? 1 : 2;
+        float centerProj = Vector3.Project(m_Position, norm)[axis] / norm[axis];
+        return new Vector2(centerProj - m_Radius, centerProj + m_Radius); //pretty easy
+    }
+
     private void OnDrawGizmos()
     {
         Vector3 offset = Vector3.zero;

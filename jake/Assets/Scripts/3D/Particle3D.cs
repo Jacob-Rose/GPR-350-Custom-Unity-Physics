@@ -55,11 +55,16 @@ public class Particle3D : MonoBehaviour
 
     public int physicsIterations = 2;
 
-    public virtual void Start()
+    public virtual void Awake()
     {
         Mass = m_StartMass;
         m_InvInertiaLocalSpace = getInertiaTensorMatrix().inverse;
         transform.position += m_Position;
+    }
+
+    public virtual void Start()
+    {
+        
     }
 
     public Matrix4x4 getInertiaTensorMatrix()

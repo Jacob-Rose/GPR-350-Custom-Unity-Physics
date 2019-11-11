@@ -26,14 +26,17 @@ public class PhysicsWorld3D : MonoBehaviour
         {
             for (int j = i + 1; j < mPhysicsObjects.Count; j++)
             {
-                //bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
-                HullCollision3D collision = mPhysicsObjects[i].DetectCollision(mPhysicsObjects[j]);
-                if (collision != null)
+                if(mPhysicsObjects[i].gameObject != mPhysicsObjects[j].gameObject)
                 {
-                    //collision.a.OnCollision(collision.b); //info is still valid before resolved called
-                    //collision.b.OnCollision(collision.a);
-                    //collision.Resolve(Time.fixedDeltaTime);
-                    Debug.Log("3D collision occured");
+                    //bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
+                    HullCollision3D collision = mPhysicsObjects[i].DetectCollision(mPhysicsObjects[j]);
+                    if (collision != null)
+                    {
+                        //collision.a.OnCollision(collision.b); //info is still valid before resolved called
+                        //collision.b.OnCollision(collision.a);
+                        //collision.Resolve(Time.fixedDeltaTime);
+                        Debug.Log("3D collision occured");
+                    }
                 }
             }
         }

@@ -40,7 +40,7 @@ public class AABBHull3D : CollisionHull3D
     }
 
 
-    public Vector2 getMinMaxProjectionValuesOnNorm(Vector3 norm)
+    public override Vector2 getMinMaxProjectionValuesOnNorm(Vector3 norm)
     {
         Vector3[] vertexes = GetVertexs();
 
@@ -69,7 +69,11 @@ public class AABBHull3D : CollisionHull3D
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-
-        Gizmos.DrawWireCube(m_Position, m_HalfLength * 2);
+        Vector3 offsetPos = Vector3.zero;
+        if (!Application.isPlaying)
+        {
+            offsetPos = transform.position;
+        }
+        Gizmos.DrawWireCube(m_Position + offsetPos, m_HalfLength * 2);
     }
 }

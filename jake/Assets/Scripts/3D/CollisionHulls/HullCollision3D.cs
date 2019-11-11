@@ -15,9 +15,10 @@ public class HullCollision3D
     {
         this.a = a;
         this.b = b;
-        this.restitution = Mathf.Min(a.m_Restitution, b.m_Restitution);
+        restitution = Mathf.Min(a.m_Restitution, b.m_Restitution);
         this.contactNormal = contactNormal;
         this.penetration = penetration;
+        this.contactPoint = contactPoint[0];
     }
 
     public void Resolve(float deltaT)
@@ -69,8 +70,9 @@ public class HullCollision3D
 
         float inpulse = deltaVelocity / totalInverseMass;
         Vector3 inpulsePerMass = contactNormal * inpulse * newSeperatingVelocity;
-        a.m_Velocity = (a.m_Velocity + (inpulsePerMass * a.m_InverseMass));
-        b.m_Velocity = (b.m_Velocity + (inpulsePerMass * -b.m_InverseMass));
+        //TODO FIX HERE
+        a.AddForceAtPoint(inpulsePerMass, contactPoint);
+        b.AddForceAtPoint(inpulsePerMass, contactPoint);
     }
 
     private void ResolveInterPenetration()
@@ -95,4 +97,6 @@ public class HullCollision3D
         b.m_Position = b.m_Position + hullBMovement;
 
     }
+
+
 }
