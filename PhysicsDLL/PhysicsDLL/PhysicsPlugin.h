@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "PhysicsWorld.h"
 
 #ifdef SUPPORT_DLL
@@ -20,7 +19,9 @@ extern "C"
 
 	PHYSICS_NATIVE_PLUGIN_API void UpdatePhysicsWorld(float deltaTime);
 
-	PHYSICS_NATIVE_PLUGIN_API void AddParticle(std::string id, float invMass, float* pos);
+	PHYSICS_NATIVE_PLUGIN_API void AddParticle(const char* id, float invMass);
+	PHYSICS_NATIVE_PLUGIN_API void RemoveParticle(const char* id);
 
-	PHYSICS_NATIVE_PLUGIN_API float* GetPhysicsObjectPos(std::string id);
+	PHYSICS_NATIVE_PLUGIN_API void SetParticlePos(const char* id, float* pos);
+	PHYSICS_NATIVE_PLUGIN_API float* GetParticlePos(const char* id);
 }

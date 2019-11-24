@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include <string>
 #include <map>
 
 struct Vector3
@@ -14,10 +13,10 @@ struct Vector3
 struct Particle3D
 {
 public:
-	Vector3 m_Pos;
-	Vector3 m_Velocity;
-	Vector3 m_Acceleration;
-	Vector3 m_Force;
+	float m_Pos[3];
+	float m_Velocity[3];
+	float m_Acceleration[3];
+	float m_Force[3];
 	float m_InvMass;
 
 	void reset();
@@ -39,13 +38,15 @@ public:
 	void Update(float deltaTime);
 
 	/*Pos is a float array size 3*/
-	void AddParticle(std::string id, float invMass, float* pos);
+	void AddParticle(const char* id, float invMass);
+	void RemoveParticle(const char* id);
+	
+	float* GetParticlePos(const char* id);
+	void SetParticlePos(const char* id, float* pos);
 
-	float* getParticlePos(std::string id);
-
-	void AddForceToParticle(std::string id, float* force);
+	//void AddForceToParticle(std::string id, float* force);
 
 private: 
-	std::vector<Particle3D> m_Particles;
-	std::map<std::string, int> m_ParticleRegistry;
+	std::vector<Particle3D*> m_ParticlePool;
+	std::map<const char*, Particle3D*> m_ParticleRegistry;
 };

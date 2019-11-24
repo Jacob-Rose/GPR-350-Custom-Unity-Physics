@@ -13,16 +13,12 @@ public class PhysicsNativePlugin
     [DllImport("PhysicsDLL")]
     public static extern void UpdatePhysicsWorld(float deltaTime);
     [DllImport("PhysicsDLL")]
-    public static extern void AddParticle(string id, float invMass, float[] pos);
+    public static extern void AddParticle(string id, float invMass);
 
     [DllImport("PhysicsDLL")]
-    public static extern IntPtr GetPhysicsObjectPos(string id);
-
-    public static float[] GetPos(string id)
-    {
-        IntPtr ptr = GetPhysicsObjectPos(id);
-        float[] floats = new float[3];
-        Marshal.Copy(ptr, floats, 0, floats.Length);
-        return floats;
-    }
+    public static extern void RemoveParticle(string id);
+    [DllImport("PhysicsDLL")]
+    public static extern void SetParticlePos(string id, float[] pos);
+    [DllImport("PhysicsDLL")]
+    public static extern IntPtr GetParticlePos(string id);
 }
