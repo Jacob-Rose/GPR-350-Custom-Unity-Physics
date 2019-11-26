@@ -29,5 +29,7 @@ extern "C"
 	PHYSICS_NATIVE_PLUGIN_API float GetParticlePosX(const char* id);
 	PHYSICS_NATIVE_PLUGIN_API float GetParticlePosY(const char* id);
 	PHYSICS_NATIVE_PLUGIN_API float GetParticlePosZ(const char* id);
-	PHYSICS_NATIVE_PLUGIN_API float AddForceXToParticle(const char* id, float force);
+	PHYSICS_NATIVE_PLUGIN_API void AddForceXToParticle(const char* id, float force);
+	PHYSICS_NATIVE_PLUGIN_API void AddForceYToParticle(const char* id, float force);
+	PHYSICS_NATIVE_PLUGIN_API void AddForceZToParticle(const char* id, float force);
 }

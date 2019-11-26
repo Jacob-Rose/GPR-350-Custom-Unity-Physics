@@ -11,6 +11,7 @@ public class CPhysicsWorld3D : MonoBehaviour
     {
         PhysicsNativePlugin.CreatePhysicsWorld();
         PhysicsNativePlugin.AddParticle("particle1", 0.5f);
+        PhysicsNativePlugin.AddForceXToParticle("particle1", 50f);
     }
 
     private void OnDestroy()
@@ -22,10 +23,9 @@ public class CPhysicsWorld3D : MonoBehaviour
     void Update()
     {
         PhysicsNativePlugin.UpdatePhysicsWorld(Time.deltaTime);
-        float[] pos = new float[3];
-        IntPtr posPtr = PhysicsNativePlugin.GetParticlePos("particle1");
-        IntPtr start = posPtr;
-        Marshal.Copy(start, pos, 0, 3);
-        Debug.Log(pos);
+        Vector3 pos = Vector3.zero;
+        pos.x = PhysicsNativePlugin.GetParticlePosX("particle1");
+        pos.y = PhysicsNativePlugin.GetParticlePosY("particle1");
+        pos.z = PhysicsNativePlugin.GetParticlePosZ("particle1");
     }
 }

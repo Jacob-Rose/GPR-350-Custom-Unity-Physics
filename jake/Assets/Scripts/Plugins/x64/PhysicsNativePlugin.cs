@@ -18,7 +18,21 @@ public class PhysicsNativePlugin
     [DllImport("PhysicsDLL")]
     public static extern void RemoveParticle(string id);
     [DllImport("PhysicsDLL")]
-    public static extern void SetParticlePos(string id, float[] pos);
+    public static extern void SetParticlePosX(string id, float pos);
     [DllImport("PhysicsDLL")]
-    public static extern IntPtr GetParticlePos(string id);
+    public static extern void SetParticlePosY(string id, float pos);
+    [DllImport("PhysicsDLL")]
+    public static extern void SetParticlePosZ(string id, float pos);
+    [DllImport("PhysicsDLL")]
+    public static extern float GetParticlePosX(string id);
+    [DllImport("PhysicsDLL")]
+    public static extern float GetParticlePosY(string id);
+    [DllImport("PhysicsDLL")]
+    public static extern float GetParticlePosZ(string id);
+    [DllImport("PhysicsDLL")]
+    public static extern void AddForceXToParticle(string id, float force);
+    [DllImport("PhysicsDLL")]
+    public static extern void AddForceYToParticle(string id, float force);
+    [DllImport("PhysicsDLL")]
+    public static extern void AddForceZToParticle(string id, float force);
 }

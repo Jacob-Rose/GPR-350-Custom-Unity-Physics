@@ -8,6 +8,8 @@ struct Vector3
 	float x;
 	float y;
 	float z;
+
+	void reset();
 };
 
 struct Particle3D
@@ -20,6 +22,10 @@ public:
 	float m_InvMass;
 
 	void reset();
+	void Update(float DeltaTime);
+	void UpdateAcceleration();
+	void UpdatePositionEuler(float DeltaTime);
+	void UpdatePositionKinematic(float DeltaTime);
 };
 
 class PhysicsWorld

@@ -46,6 +46,12 @@ void PhysicsWorld::cleanupInstance()
 
 void PhysicsWorld::Update(float deltaTime)
 {
+	std::map<const char*, Particle3D*>::iterator it = m_ParticleRegistry.begin();
+	while (it != m_ParticleRegistry.end())
+	{
+		it->second->Update(deltaTime);
+		++it;
+	}
 }
 
 void PhysicsWorld::AddParticle(const char* id, float invMass)
@@ -73,11 +79,11 @@ float PhysicsWorld::GetParticlePosX(const char* id)
 }
 float PhysicsWorld::GetParticlePosY(const char* id)
 {
-	return m_ParticleRegistry[id]->m_Pos.x;
+	return m_ParticleRegistry[id]->m_Pos.y;
 }
 float PhysicsWorld::GetParticlePosZ(const char* id)
 {
-	return m_ParticleRegistry[id]->m_Pos.x;
+	return m_ParticleRegistry[id]->m_Pos.z;
 }
 
 void PhysicsWorld::SetParticlePosX(const char* id, float pos)
@@ -99,29 +105,60 @@ void PhysicsWorld::AddForceXToParticle(const char* id, float force)
 }
 void PhysicsWorld::AddForceYToParticle(const char* id, float force)
 {
-	m_ParticleRegistry[id]->m_Force.x += force;
+	m_ParticleRegistry[id]->m_Force.y += force;
 }
 void PhysicsWorld::AddForceZToParticle(const char* id, float force)
 {
 	m_ParticleRegistry[id]->m_Force.z += force;
 }
 
-
-
 void Particle3D::reset()
 {
 	//set everything to zero
-	m_Pos.x = 0;
-	m_Pos.y = 0;
-	m_Pos.z = 0;
-	m_Velocity.x = 0;
-	m_Velocity.y = 0;
-	m_Velocity.z = 0;
-	m_Acceleration.x = 0;
-	m_Acceleration.y = 0;
-	m_Acceleration.z = 0;
-	m_Force.x = 0;
-	m_Force.y = 0;
-	m_Force.z = 0;
+	m_Pos.reset();
+	m_Velocity.reset();
+	m_Acceleration.reset();
+	m_Force.reset();
 	m_InvMass = 0;
+}
+
+void Particle3D::Update(float DeltaTime)
+{
+	UpdateAcceleration();
+	UpdatePositionKinematic(DeltaTime);
+}
+
+void Particle3D::UpdateAcceleration()
+{
+	m_Acceleration.x = m_Force.x * m_InvMass;
+	m_Acceleration.y = m_Force.y * m_InvMass;
+	m_Acceleration.z = m_Force.z * m_InvMass;
+	m_Force.reset();
+}
+
+void Particle3D::UpdatePositionEuler(float DeltaTime)
+{
+	m_Pos.x += m_Velocity.x * DeltaTime;
+	m_Pos.y += m_Velocity.y * DeltaTime;
+	m_Pos.z += m_Velocity.z * DeltaTime;
+	m_Velocity.x += m_Acceleration.x * DeltaTime;
+	m_Velocity.y += m_Acceleration.y * DeltaTime;
+	m_Velocity.z += m_Acceleration.z * DeltaTime;
+}
+
+void Particle3D::UpdatePositionKinematic(float DeltaTime)
+{
+	m_Pos.x += (m_Velocity.x * DeltaTime) + (0.5f * m_Acceleration.x * DeltaTime * DeltaTime);
+	m_Pos.y += (m_Velocity.y * DeltaTime) + (0.5f * m_Acceleration.y * DeltaTime * DeltaTime);
+	m_Pos.z += (m_Velocity.z * DeltaTime) + (0.5f * m_Acceleration.z * DeltaTime * DeltaTime);
+	m_Velocity.x += m_Acceleration.x * DeltaTime;
+	m_Velocity.y += m_Acceleration.y * DeltaTime;
+	m_Velocity.z += m_Acceleration.z * DeltaTime;
+}
+
+void Vector3::reset()
+{
+	x = 0;
+	y = 0;
+	z = 0;
 }

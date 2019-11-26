@@ -58,3 +58,19 @@ PHYSICS_NATIVE_PLUGIN_API float GetParticlePosZ(const char* id)
 {
 	return PhysicsWorld::m_Instance->GetParticlePosZ(id);
 }
+
+PHYSICS_NATIVE_PLUGIN_API void AddForceXToParticle(const char* id, float force)
+{
+	PhysicsWorld::m_Instance->AddForceXToParticle(id, force);
+	return;
+}
+PHYSICS_NATIVE_PLUGIN_API void AddForceYToParticle(const char* id, float force)
+{
+	PhysicsWorld::m_Instance->AddForceYToParticle(id, force);
+	return;
+}
+PHYSICS_NATIVE_PLUGIN_API void AddForceZToParticle(const char* id, float force)
+{
+	PhysicsWorld::m_Instance->AddForceZToParticle(id, force);
+	return;
+}

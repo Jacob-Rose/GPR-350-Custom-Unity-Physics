@@ -1,2 +1,5 @@
-﻿     Creating library C:\Users\Student\Documents\Jake_Repos\GPR-350-101\PhysicsDLL\x64\Debug\PhysicsDLL.lib and object C:\Users\Student\Documents\Jake_Repos\GPR-350-101\PhysicsDLL\x64\Debug\PhysicsDLL.exp
+﻿  PhysicsPlugin.cpp
+  PhysicsWorld.cpp
+  Generating Code...
+     Creating library C:\Users\Student\Documents\Jake_Repos\GPR-350-101\PhysicsDLL\x64\Debug\PhysicsDLL.lib and object C:\Users\Student\Documents\Jake_Repos\GPR-350-101\PhysicsDLL\x64\Debug\PhysicsDLL.exp
   PhysicsDLL.vcxproj -> C:\Users\Student\Documents\Jake_Repos\GPR-350-101\PhysicsDLL\x64\Debug\PhysicsDLL.dll
