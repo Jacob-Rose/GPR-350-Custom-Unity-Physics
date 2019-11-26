@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <string>
 #include <map>
 
 struct Vector3
@@ -61,5 +62,5 @@ public:
 
 private: 
 	std::vector<Particle3D*> m_ParticlePool;
-	std::map<const char*, Particle3D*> m_ParticleRegistry;
+	std::map<std::string, Particle3D*> m_ParticleRegistry;
 };

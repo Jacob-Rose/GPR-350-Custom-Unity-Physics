@@ -26,7 +26,7 @@ void PhysicsWorld::cleanup()
 	{
 		delete m_ParticlePool.at(i);
 	}
-	std::map<const char*, Particle3D*>::iterator it = m_ParticleRegistry.begin();
+	std::map<std::string, Particle3D*>::iterator it = m_ParticleRegistry.begin();
 	while (it != m_ParticleRegistry.end())
 	{
 		delete it->second;
@@ -46,7 +46,7 @@ void PhysicsWorld::cleanupInstance()
 
 void PhysicsWorld::Update(float deltaTime)
 {
-	std::map<const char*, Particle3D*>::iterator it = m_ParticleRegistry.begin();
+	std::map<std::string, Particle3D*>::iterator it = m_ParticleRegistry.begin();
 	while (it != m_ParticleRegistry.end())
 	{
 		it->second->Update(deltaTime);
@@ -56,7 +56,7 @@ void PhysicsWorld::Update(float deltaTime)
 
 void PhysicsWorld::AddParticle(const char* id, float invMass)
 {
-	m_ParticleRegistry.insert(std::pair<const char*, Particle3D*>(id, m_ParticlePool[0]));
+	m_ParticleRegistry.insert(std::pair<std::string, Particle3D*>(std::string(id), m_ParticlePool[0]));
 	m_ParticlePool[0]->reset();
 	m_ParticlePool[0]->m_InvMass = invMass;
 	m_ParticlePool.erase(m_ParticlePool.begin());
@@ -64,7 +64,7 @@ void PhysicsWorld::AddParticle(const char* id, float invMass)
 
 void PhysicsWorld::RemoveParticle(const char* id)
 {
-	std::map<const char*, Particle3D*>::iterator it = m_ParticleRegistry.find(id);
+	std::map<std::string, Particle3D*>::iterator it = m_ParticleRegistry.find(std::string(id));
 	if (it != m_ParticleRegistry.end())
 	{
 		m_ParticlePool.push_back(it->second);
@@ -75,41 +75,56 @@ void PhysicsWorld::RemoveParticle(const char* id)
 
 float PhysicsWorld::GetParticlePosX(const char* id)
 {
-	return m_ParticleRegistry[id]->m_Pos.x;
+	std::map<std::string, Particle3D*>::iterator it = m_ParticleRegistry.find(std::string(id));
+	if (it != m_ParticleRegistry.end())
+	{
+		return it->second->m_Pos.x;
+	}
+	return FLT_MAX;
 }
 float PhysicsWorld::GetParticlePosY(const char* id)
 {
-	return m_ParticleRegistry[id]->m_Pos.y;
+	std::map<std::string, Particle3D*>::iterator it = m_ParticleRegistry.find(std::string(id));
+	if (it != m_ParticleRegistry.end())
+	{
+		return it->second->m_Pos.y;
+	}
+	return FLT_MAX;
 }
 float PhysicsWorld::GetParticlePosZ(const char* id)
 {
-	return m_ParticleRegistry[id]->m_Pos.z;
+	std::map<std::string, Particle3D*>::iterator it = m_ParticleRegistry.find(std::string(id));
+	if (it != m_ParticleRegistry.end())
+	{
+		return it->second->m_Pos.z;
+	}
+	return FLT_MAX;
 }
 
 void PhysicsWorld::SetParticlePosX(const char* id, float pos)
 {
-	m_ParticleRegistry[id]->m_Pos.x = pos;
+	m_ParticleRegistry[std::string(id)]->m_Pos.x = pos;
 }
 void PhysicsWorld::SetParticlePosY(const char* id, float pos)
 {
-	m_ParticleRegistry[id]->m_Pos.y = pos;
+	m_ParticleRegistry[std::string(id)]->m_Pos.y = pos;
 }
 void PhysicsWorld::SetParticlePosZ(const char* id, float pos)
 {
-	m_ParticleRegistry[id]->m_Pos.z = pos;
+	m_ParticleRegistry[std::string(id)]->m_Pos.z = pos;
 }
 
 void PhysicsWorld::AddForceXToParticle(const char* id, float force)
 {
-	m_ParticleRegistry[id]->m_Force.x += force;
+	m_ParticleRegistry[std::string(id)]->m_Force.x += force;
 }
 void PhysicsWorld::AddForceYToParticle(const char* id, float force)
 {
-	m_ParticleRegistry[id]->m_Force.y += force;
+	m_ParticleRegistry[std::string(id)]->m_Force.y += force;
 }
 void PhysicsWorld::AddForceZToParticle(const char* id, float force)
 {
-	m_ParticleRegistry[id]->m_Force.z += force;
+	m_ParticleRegistry[std::string(id)]->m_Force.z += force;
 }
 
 void Particle3D::reset()
