@@ -28,6 +28,7 @@ public class HullCollision3D
 
         ResolveVelocity(deltaT);
         ResolveInterPenetration();
+
     }
 
     public float calculateSeperatingVelocity()
@@ -35,6 +36,14 @@ public class HullCollision3D
         Vector3 relativeVelocity = a.m_Velocity;
         relativeVelocity -= b.m_Velocity;
         return Vector3.Dot(relativeVelocity, contactNormal);
+    }
+
+    private void ResolveAngularVelocity(float deltaT)
+    {
+        if(a is OBBHull3D || b is OBBHull3D)
+        {
+
+        }
     }
 
     private void ResolveVelocity(float deltaT)
@@ -70,17 +79,13 @@ public class HullCollision3D
 
         float inpulse = deltaVelocity / totalInverseMass;
         Vector3 inpulsePerMass = contactNormal * inpulse * newSeperatingVelocity;
-        //TODO FIX HERE
-        a.AddForceAtPoint(inpulsePerMass, contactPoint);
-        b.AddForceAtPoint(inpulsePerMass, contactPoint);
+        a.m_Velocity = a.m_Velocity + (inpulsePerMass * a.m_InverseMass);
+        b.m_Velocity = b.m_Velocity + (inpulsePerMass * -b.m_InverseMass);
     }
 
     private void ResolveInterPenetration()
     {
-        if (penetration <= 0)
-        {
-            return;
-        }
+        if (penetration <= 0) { return; }
 
         float totalInverseMass = a.m_InverseMass + b.m_InverseMass;
         if (totalInverseMass <= 0)
@@ -88,7 +93,7 @@ public class HullCollision3D
             return; //dont do anything, they cannot move
         }
 
-        Vector3 movePerMass = contactNormal * (penetration / totalInverseMass);
+        Vector3 movePerMass = contactNormal.normalized * (penetration * 2.0f / totalInverseMass);
 
         Vector3 hullAMovement = movePerMass * a.m_InverseMass;
         Vector3 hullBMovement = movePerMass * -b.m_InverseMass;

@@ -151,6 +151,7 @@ public abstract class CollisionHull3D : Particle3D
         axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         norm = a.getZNormal();
         axisValues.Add(norm, checkAxisPenetration(a, b, norm));
+
         norm = b.getXNormal();
         if (!axisValues.ContainsKey(norm)) //if b-x axis not added yet (from a)
         {
@@ -169,47 +170,47 @@ public abstract class CollisionHull3D : Particle3D
 
         //Cross Products
         norm = Vector3.Cross(a.getXNormal(), b.getXNormal());
-        if (!axisValues.ContainsKey(norm)) 
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero) 
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getXNormal(), b.getYNormal());
-        if (!axisValues.ContainsKey(norm)) 
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero) 
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getXNormal(), b.getZNormal());
-        if (!axisValues.ContainsKey(norm)) 
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero) 
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getYNormal(), b.getXNormal());
-        if (!axisValues.ContainsKey(norm))
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getYNormal(), b.getYNormal());
-        if (!axisValues.ContainsKey(norm))
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getYNormal(), b.getZNormal());
-        if (!axisValues.ContainsKey(norm))
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getZNormal(), b.getXNormal());
-        if (!axisValues.ContainsKey(norm))
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getZNormal(), b.getYNormal());
-        if (!axisValues.ContainsKey(norm))
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
         norm = Vector3.Cross(a.getZNormal(), b.getZNormal());
-        if (!axisValues.ContainsKey(norm))
+        if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
             axisValues.Add(norm, checkAxisPenetration(b, a, norm));
         }
@@ -232,7 +233,7 @@ public abstract class CollisionHull3D : Particle3D
             }
         }
         Vector3 bestNorm = bestPenetration.Value.Key;
-        return new HullCollision3D(a, b, bestNorm, bestPenetration.Value.Value, contactPoints);
+        return new HullCollision3D(a, b, bestNorm, Mathf.Abs(bestPenetration.Value.Value), contactPoints);
 
     }
 

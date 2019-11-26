@@ -34,7 +34,7 @@ public class PhysicsWorld3D : MonoBehaviour
                     {
                         //collision.a.OnCollision(collision.b); //info is still valid before resolved called
                         //collision.b.OnCollision(collision.a);
-                        //collision.Resolve(Time.fixedDeltaTime);
+                        collision.Resolve(Time.fixedDeltaTime);
                         Debug.Log("3D collision occured");
                     }
                 }
