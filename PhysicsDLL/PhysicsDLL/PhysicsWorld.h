@@ -13,10 +13,10 @@ struct Vector3
 struct Particle3D
 {
 public:
-	float m_Pos[3];
-	float m_Velocity[3];
-	float m_Acceleration[3];
-	float m_Force[3];
+	Vector3 m_Pos;
+	Vector3 m_Velocity;
+	Vector3 m_Acceleration;
+	Vector3 m_Force;
 	float m_InvMass;
 
 	void reset();
@@ -41,10 +41,17 @@ public:
 	void AddParticle(const char* id, float invMass);
 	void RemoveParticle(const char* id);
 	
-	float* GetParticlePos(const char* id);
-	void SetParticlePos(const char* id, float* pos);
+	float GetParticlePosX(const char* id);
+	float GetParticlePosY(const char* id);
+	float GetParticlePosZ(const char* id);
 
-	//void AddForceToParticle(std::string id, float* force);
+	void SetParticlePosX(const char* id, float pos);
+	void SetParticlePosY(const char* id, float pos);
+	void SetParticlePosZ(const char* id, float pos);
+
+	void AddForceXToParticle(const char* id, float force);
+	void AddForceYToParticle(const char* id, float force);
+	void AddForceZToParticle(const char* id, float force);
 
 private: 
 	std::vector<Particle3D*> m_ParticlePool;

@@ -3,22 +3,49 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.Jobs;
 
-public class PhysicsEntityManager : JobComponentSystem
+public class PhysicsEntityManager : MonoBehaviour
 {
-    /*
-    private struct Interpolate : IJobForEach<AngularComponentData>
+    TransformAccessArray transforms;
+    JobHandle integrationHandle;
+    IntegrationJob integrationJob;
+
+    void OnDisable()
     {
-        public void Execute(ref AngularComponentData c0)
-        {
-            throw new System.NotImplementedException();
-        }
+        integrationHandle.Complete();
+        transforms.Dispose();
     }
-    */
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+
+    void Start()
     {
-        //var job = new RotationSpeedRotation() { dt = Time.deltaTime };
-        //return job.Schedule(this, inputDeps);
-        return new JobHandle();
+        transforms = new TransformAccessArray(0, -1);
+    }
+
+    void Update()
+    {
+        integrationHandle.Complete();
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            AddPhysicsObject(1);
+        }
+
+        integrationJob = new IntegrationJob()
+        {
+
+        };
+
+        integrationHandle = integrationJob.Schedule(transforms);
+    }
+
+    void AddPhysicsObject(int count)
+    {
+        integrationHandle.Complete();
+
+        transforms.capacity = transforms.length + count;
+        for(int i = 0; i < count; i++)
+        {
+            //transforms.Add()
+        }
     }
 }

@@ -30,13 +30,31 @@ PHYSICS_NATIVE_PLUGIN_API void RemoveParticle(const char* id)
 	return;
 }
 
-PHYSICS_NATIVE_PLUGIN_API void SetParticlePos(const char* id, float* pos)
+PHYSICS_NATIVE_PLUGIN_API void SetParticlePosX(const char* id, float pos)
 {
-	PhysicsWorld::m_Instance->SetParticlePos(id, pos);
+	PhysicsWorld::m_Instance->SetParticlePosX(id, pos);
+	return;
+}
+PHYSICS_NATIVE_PLUGIN_API void SetParticlePosY(const char* id, float pos)
+{
+	PhysicsWorld::m_Instance->SetParticlePosY(id, pos);
+	return;
+}
+PHYSICS_NATIVE_PLUGIN_API void SetParticlePosZ(const char* id, float pos)
+{
+	PhysicsWorld::m_Instance->SetParticlePosZ(id, pos);
 	return;
 }
 
-PHYSICS_NATIVE_PLUGIN_API float* GetParticlePos(const char* id)
+PHYSICS_NATIVE_PLUGIN_API float GetParticlePosX(const char* id)
 {
-	return PhysicsWorld::m_Instance->GetParticlePos(id);
+	return PhysicsWorld::m_Instance->GetParticlePosX(id);
+}
+PHYSICS_NATIVE_PLUGIN_API float GetParticlePosY(const char* id)
+{
+	return PhysicsWorld::m_Instance->GetParticlePosY(id);
+}
+PHYSICS_NATIVE_PLUGIN_API float GetParticlePosZ(const char* id)
+{
+	return PhysicsWorld::m_Instance->GetParticlePosZ(id);
 }

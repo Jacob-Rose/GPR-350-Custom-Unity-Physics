@@ -22,6 +22,12 @@ extern "C"
 	PHYSICS_NATIVE_PLUGIN_API void AddParticle(const char* id, float invMass);
 	PHYSICS_NATIVE_PLUGIN_API void RemoveParticle(const char* id);
 
-	PHYSICS_NATIVE_PLUGIN_API void SetParticlePos(const char* id, float* pos);
-	PHYSICS_NATIVE_PLUGIN_API float* GetParticlePos(const char* id);
+	PHYSICS_NATIVE_PLUGIN_API void SetParticlePosX(const char* id, float pos);
+	PHYSICS_NATIVE_PLUGIN_API void SetParticlePosY(const char* id, float pos);
+	PHYSICS_NATIVE_PLUGIN_API void SetParticlePosZ(const char* id, float pos);
+
+	PHYSICS_NATIVE_PLUGIN_API float GetParticlePosX(const char* id);
+	PHYSICS_NATIVE_PLUGIN_API float GetParticlePosY(const char* id);
+	PHYSICS_NATIVE_PLUGIN_API float GetParticlePosZ(const char* id);
+	PHYSICS_NATIVE_PLUGIN_API float AddForceXToParticle(const char* id, float force);
 }

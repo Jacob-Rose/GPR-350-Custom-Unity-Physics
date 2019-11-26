@@ -67,32 +67,61 @@ void PhysicsWorld::RemoveParticle(const char* id)
 	}
 }
 
-float* PhysicsWorld::GetParticlePos(const char* id)
+float PhysicsWorld::GetParticlePosX(const char* id)
 {
-	return &m_ParticleRegistry[id]->m_Pos[0];
+	return m_ParticleRegistry[id]->m_Pos.x;
+}
+float PhysicsWorld::GetParticlePosY(const char* id)
+{
+	return m_ParticleRegistry[id]->m_Pos.x;
+}
+float PhysicsWorld::GetParticlePosZ(const char* id)
+{
+	return m_ParticleRegistry[id]->m_Pos.x;
 }
 
-void PhysicsWorld::SetParticlePos(const char* id, float* pos)
+void PhysicsWorld::SetParticlePosX(const char* id, float pos)
 {
-	m_ParticleRegistry[id]->m_Pos[0] = pos[0];
-	m_ParticleRegistry[id]->m_Pos[1] = pos[1];
-	m_ParticleRegistry[id]->m_Pos[2] = pos[2];
+	m_ParticleRegistry[id]->m_Pos.x = pos;
 }
+void PhysicsWorld::SetParticlePosY(const char* id, float pos)
+{
+	m_ParticleRegistry[id]->m_Pos.y = pos;
+}
+void PhysicsWorld::SetParticlePosZ(const char* id, float pos)
+{
+	m_ParticleRegistry[id]->m_Pos.z = pos;
+}
+
+void PhysicsWorld::AddForceXToParticle(const char* id, float force)
+{
+	m_ParticleRegistry[id]->m_Force.x += force;
+}
+void PhysicsWorld::AddForceYToParticle(const char* id, float force)
+{
+	m_ParticleRegistry[id]->m_Force.x += force;
+}
+void PhysicsWorld::AddForceZToParticle(const char* id, float force)
+{
+	m_ParticleRegistry[id]->m_Force.z += force;
+}
+
+
 
 void Particle3D::reset()
 {
 	//set everything to zero
-	m_Pos[0] = 0;
-	m_Pos[1] = 0;
-	m_Pos[2] = 0;
-	m_Velocity[0] = 0;
-	m_Velocity[1] = 0;
-	m_Velocity[2] = 0;
-	m_Acceleration[0] = 0;
-	m_Acceleration[1] = 0;
-	m_Acceleration[2] = 0;
-	m_Force[0] = 0;
-	m_Force[1] = 0;
-	m_Force[2] = 0;
+	m_Pos.x = 0;
+	m_Pos.y = 0;
+	m_Pos.z = 0;
+	m_Velocity.x = 0;
+	m_Velocity.y = 0;
+	m_Velocity.z = 0;
+	m_Acceleration.x = 0;
+	m_Acceleration.y = 0;
+	m_Acceleration.z = 0;
+	m_Force.x = 0;
+	m_Force.y = 0;
+	m_Force.z = 0;
 	m_InvMass = 0;
 }
