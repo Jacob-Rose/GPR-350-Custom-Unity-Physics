@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class CollisionHull3D : Particle3D
 {
     public float m_Restitution = 0.5f;
-    public Vector3 m_LocalOffset;
     public abstract HullCollision3D DetectCollision(CollisionHull3D other);
     public abstract Vector2 getMinMaxProjectionValuesOnNorm(Vector3 norm);
 
@@ -155,64 +154,64 @@ public abstract class CollisionHull3D : Particle3D
         norm = b.getXNormal();
         if (!axisValues.ContainsKey(norm)) //if b-x axis not added yet (from a)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = b.getYNormal();
         if (!axisValues.ContainsKey(norm)) //if b-y axis not added yet (from a)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = b.getZNormal();
         if (!axisValues.ContainsKey(b.getZNormal())) //if b-z axis not added yet(from a)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
 
         //Cross Products
         norm = Vector3.Cross(a.getXNormal(), b.getXNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero) 
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getXNormal(), b.getYNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero) 
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getXNormal(), b.getZNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero) 
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getYNormal(), b.getXNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getYNormal(), b.getYNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getYNormal(), b.getZNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getZNormal(), b.getXNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getZNormal(), b.getYNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
         norm = Vector3.Cross(a.getZNormal(), b.getZNormal());
         if (!axisValues.ContainsKey(norm) && norm != Vector3.zero)
         {
-            axisValues.Add(norm, checkAxisPenetration(b, a, norm));
+            axisValues.Add(norm, checkAxisPenetration(a, b, norm));
         }
 
 
@@ -232,8 +231,7 @@ public abstract class CollisionHull3D : Particle3D
                 return null;
             }
         }
-        Vector3 bestNorm = bestPenetration.Value.Key;
-        return new HullCollision3D(a, b, bestNorm, Mathf.Abs(bestPenetration.Value.Value), contactPoints);
+        return new HullCollision3D(a, b, bestPenetration.Value.Key, bestPenetration.Value.Value * 2, contactPoints);
 
     }
 

@@ -26,7 +26,17 @@ public class PhysicsWorld3D : MonoBehaviour
         {
             for (int j = i + 1; j < mPhysicsObjects.Count; j++)
             {
-                if(mPhysicsObjects[i].gameObject != mPhysicsObjects[j].gameObject)
+                Transform maxParentA = mPhysicsObjects[i].transform;
+                while(maxParentA.parent != null)
+                {
+                    maxParentA = maxParentA.parent;
+                }
+                Transform maxParentB = mPhysicsObjects[i+1].transform;
+                while (maxParentB.parent != null)
+                {
+                    maxParentB = maxParentA.parent;
+                }
+                if(maxParentA != maxParentB)
                 {
                     //bool coll = mPhysicsObjects[i].detectCollision(mPhysicsObjects[j]);
                     HullCollision3D collision = mPhysicsObjects[i].DetectCollision(mPhysicsObjects[j]);

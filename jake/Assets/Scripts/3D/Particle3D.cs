@@ -45,7 +45,6 @@ public class Particle3D : MonoBehaviour
 
     public Vector3 centerOfMassLocalSpace = Vector3.zero;
 
-
     public float m_InverseMass { get; private set; }
     public float Mass
     {

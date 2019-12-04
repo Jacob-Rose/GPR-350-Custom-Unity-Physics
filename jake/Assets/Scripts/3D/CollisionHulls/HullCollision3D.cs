@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct ContactData3D
+{
+    public float penetration;
+    public Vector3 contactNorm;
+    public Vector3 worldPos;
+}
+
 public class HullCollision3D
 {
     public CollisionHull3D a;
@@ -9,7 +16,7 @@ public class HullCollision3D
     public float penetration;
     public float restitution;
     public Vector3 contactNormal;
-    public Vector3 contactPoint = Vector2.zero;
+    public List<Vector3> contactPoint = new List<Vector3>();
     // Start is called before the first frame update
     public HullCollision3D(CollisionHull3D a, CollisionHull3D b, Vector3 contactNormal, float penetration, Vector3[] contactPoint)
     {
@@ -18,7 +25,7 @@ public class HullCollision3D
         restitution = Mathf.Min(a.m_Restitution, b.m_Restitution);
         this.contactNormal = contactNormal;
         this.penetration = penetration;
-        this.contactPoint = contactPoint[0];
+        this.contactPoint.AddRange(contactPoint);
     }
 
     public void Resolve(float deltaT)
@@ -33,9 +40,16 @@ public class HullCollision3D
 
     public float calculateSeperatingVelocity()
     {
+        if(a.m_Velocity.magnitude < b.m_Velocity.magnitude)
+        {
+            CollisionHull3D tmp = a;
+            a = b;
+            b = tmp;
+        }
         Vector3 relativeVelocity = a.m_Velocity;
         relativeVelocity -= b.m_Velocity;
-        return Vector3.Dot(relativeVelocity, contactNormal);
+        float sepVel =  Vector3.Dot(relativeVelocity, contactNormal);
+        return sepVel;
     }
 
     private void ResolveAngularVelocity(float deltaT)
@@ -93,7 +107,7 @@ public class HullCollision3D
             return; //dont do anything, they cannot move
         }
 
-        Vector3 movePerMass = contactNormal.normalized * (penetration * 2.0f / totalInverseMass);
+        Vector3 movePerMass = contactNormal.normalized * (penetration/ totalInverseMass);
 
         Vector3 hullAMovement = movePerMass * a.m_InverseMass;
         Vector3 hullBMovement = movePerMass * -b.m_InverseMass;
