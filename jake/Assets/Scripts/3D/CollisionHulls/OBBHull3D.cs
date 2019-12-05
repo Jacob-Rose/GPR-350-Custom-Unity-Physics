@@ -89,7 +89,7 @@ public class OBBHull3D : CollisionHull3D
         }
         else
         {
-            throw new System.Exception("Sphere + " + other.GetType() + " are not compatible, add it");
+            throw new System.Exception(GetType().ToString() + other.GetType().ToString() + " are not compatible, add it");
         }
     }
 

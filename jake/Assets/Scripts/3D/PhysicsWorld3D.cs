@@ -20,7 +20,7 @@ public class PhysicsWorld3D : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         for (int i = 0; i < mPhysicsObjects.Count; i++)
         {

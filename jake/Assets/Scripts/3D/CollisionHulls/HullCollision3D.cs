@@ -40,12 +40,14 @@ public class HullCollision3D
 
     public float calculateSeperatingVelocity()
     {
+        /*
         if(a.m_Velocity.magnitude < b.m_Velocity.magnitude)
         {
             CollisionHull3D tmp = a;
             a = b;
             b = tmp;
         }
+        */
         Vector3 relativeVelocity = a.m_Velocity;
         relativeVelocity -= b.m_Velocity;
         float sepVel =  Vector3.Dot(relativeVelocity, contactNormal);

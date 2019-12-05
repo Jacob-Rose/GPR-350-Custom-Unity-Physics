@@ -52,18 +52,15 @@ public class Particle3D : MonoBehaviour
         get { return 1 / m_InverseMass; }
     }
 
-    public int physicsIterations = 2;
-
-    public virtual void Awake()
+    public virtual void Start()
     {
         Mass = m_StartMass;
         m_InvInertiaLocalSpace = getInertiaTensorMatrix().inverse;
         transform.position += m_Position;
-    }
-
-    public virtual void Start()
-    {
-        
+        m_Position = transform.position + new Vector3(m_Position.x, m_Position.y, 0);
+        m_Rotation = transform.rotation;
+        m_ObjectToWorldTransform = Matrix4x4.TRS(m_Position, m_Rotation, Vector3.one);
+        m_WorldToObjectTransform = m_ObjectToWorldTransform.transpose;
     }
 
     public Matrix4x4 getInertiaTensorMatrix()
@@ -137,34 +134,30 @@ public class Particle3D : MonoBehaviour
 
     public void AddForceAtPointLocal(Vector3 force, Vector3 point)
     {
-        Vector4 pointInWorld = m_ObjectToWorldTransform * point;
-        AddForceAtPoint(m_ObjectToWorldTransform * force, new Vector3(pointInWorld.x, pointInWorld.y, pointInWorld.z) + m_Position);
-    }
-
-    public void AddForceLocal(Vector3 force)
-    {
-        m_Force += force;
-    }
-
-    public void AddForce(Vector3 force)
-    {
-        Vector4 newForce = m_WorldToObjectTransform * force;
-        m_Force += new Vector3(newForce.x, newForce.y, newForce.z);
-    }
-
-    public void AddForceAtPoint(Vector3 force, Vector3 point)
-    {
         Vector3 momentArm = (point - m_CenterOfMassWorld);
         m_Torque += Vector3.Cross(momentArm, force);
         Debug.DrawRay(point, -force, Color.blue);
         AddForce(force);
     }
 
+    public void AddForce(Vector3 force)
+    {
+        m_Force += force;
+    }
+
+    public void AddForceLocal(Vector3 force)
+    {
+        m_Force += m_ObjectToWorldTransform.MultiplyPoint(force);
+    }
+
+    public void AddForceAtPoint(Vector3 force, Vector3 point)
+    {
+        Vector4 pointInWorld = m_WorldToObjectTransform * point;
+        AddForceAtPointLocal(m_WorldToObjectTransform * force, new Vector3(pointInWorld.x, pointInWorld.y, pointInWorld.z) + m_Position);
+    }
+
     public virtual void FixedUpdate()
     {
-        m_Position = transform.position;
-        m_Rotation = transform.rotation;
-
         m_ObjectToWorldTransform = Matrix4x4.TRS(m_Position, m_Rotation, Vector3.one);
         m_WorldToObjectTransform = m_ObjectToWorldTransform.transpose;
 
