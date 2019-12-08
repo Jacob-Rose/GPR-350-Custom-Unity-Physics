@@ -134,10 +134,10 @@ public class Particle3D : MonoBehaviour
 
     public void AddForceAtPointLocal(Vector3 force, Vector3 point)
     {
-        Vector3 momentArm = (point - m_CenterOfMassWorld);
+        Vector3 momentArm = (point - m_CenterOfMass);
         m_Torque += Vector3.Cross(momentArm, force);
-        Debug.DrawRay(point, -force, Color.blue);
-        AddForce(force);
+        Debug.DrawRay(m_ObjectToWorldTransform.MultiplyPoint(point), m_ObjectToWorldTransform.MultiplyVector(force) * 10, Color.blue, 0.1f, false) ;
+        AddForceLocal(force);
     }
 
     public void AddForce(Vector3 force)
@@ -147,13 +147,13 @@ public class Particle3D : MonoBehaviour
 
     public void AddForceLocal(Vector3 force)
     {
-        m_Force += m_ObjectToWorldTransform.MultiplyPoint(force);
+        m_Force += m_WorldToObjectTransform.MultiplyVector(force);
     }
 
     public void AddForceAtPoint(Vector3 force, Vector3 point)
     {
-        Vector4 pointInWorld = m_WorldToObjectTransform * point;
-        AddForceAtPointLocal(m_WorldToObjectTransform * force, new Vector3(pointInWorld.x, pointInWorld.y, pointInWorld.z) + m_Position);
+        Vector4 pointInWorld = m_WorldToObjectTransform.MultiplyPoint(point);
+        AddForceAtPointLocal(m_ObjectToWorldTransform.MultiplyPoint(force), new Vector3(pointInWorld.x, pointInWorld.y, pointInWorld.z) + m_Position);
     }
 
     public virtual void FixedUpdate()

@@ -54,14 +54,6 @@ public class HullCollision3D
         return sepVel;
     }
 
-    private void ResolveAngularVelocity(float deltaT)
-    {
-        if(a is OBBHull3D || b is OBBHull3D)
-        {
-
-        }
-    }
-
     private void ResolveVelocity(float deltaT)
     {
         float seperatingVelocity = calculateSeperatingVelocity();
@@ -95,8 +87,8 @@ public class HullCollision3D
 
         float inpulse = deltaVelocity / totalInverseMass;
         Vector3 inpulsePerMass = contactNormal * inpulse * newSeperatingVelocity;
-        a.m_Velocity = a.m_Velocity + (inpulsePerMass * a.m_InverseMass);
-        b.m_Velocity = b.m_Velocity + (inpulsePerMass * -b.m_InverseMass);
+        a.AddForceAtPoint(inpulsePerMass, contactPoint[0]);
+        b.AddForceAtPoint(-inpulsePerMass, contactPoint[0]);
     }
 
     private void ResolveInterPenetration()

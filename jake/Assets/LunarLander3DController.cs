@@ -13,30 +13,29 @@ public class LunarLander3DController : OBBHull3D
     public override void FixedUpdate()
     {
         float deltaTime = Time.fixedDeltaTime;
-        //AddForceLocal(ForceGenerator3D.GenerateForce_Gravity(Mass, -6.0f, Vector3.up) * deltaTime);
+        AddForce(ForceGenerator3D.GenerateForce_Gravity(Mass, -9.8f, Vector3.up) * deltaTime);
         if(Input.GetKey(KeyCode.A))
         {
-            AddThrust(deltaTime, new Vector3(0, m_ThrusterDistFromCenter, 0));
-        }
-        if(Input.GetKey(KeyCode.W))
-        {
-            AddThrust(deltaTime, new Vector3(0, -m_ThrusterDistFromCenter, 0));
-        }
-        if(Input.GetKey(KeyCode.S))
-        {
-            AddThrust(deltaTime, new Vector3(0, m_ThrusterDistFromCenter, 0));
+            AddThrust(deltaTime, new Vector3(m_ThrusterDistFromCenter, 0));
         }
         if(Input.GetKey(KeyCode.D))
         {
-            AddThrust(deltaTime, new Vector3(0, -m_ThrusterDistFromCenter, 0));
+            AddThrust(deltaTime, new Vector3(-m_ThrusterDistFromCenter, 0));
         }
-        if(Input.GetKey(KeyCode.Q))
+        if(Input.GetKey(KeyCode.W))
+        {
+            AddThrust(deltaTime, new Vector3(0, 0, m_ThrusterDistFromCenter));
+        }
+        if(Input.GetKey(KeyCode.S))
         {
             AddThrust(deltaTime, new Vector3(0, 0, -m_ThrusterDistFromCenter));
         }
         if(Input.GetKey(KeyCode.E))
         {
+            AddThrust(deltaTime, new Vector3(m_ThrusterDistFromCenter, 0));
+            AddThrust(deltaTime, new Vector3(-m_ThrusterDistFromCenter, 0));
             AddThrust(deltaTime, new Vector3(0, 0, m_ThrusterDistFromCenter));
+            AddThrust(deltaTime, new Vector3(0, 0, -m_ThrusterDistFromCenter));
         }
         
         base.FixedUpdate();
@@ -45,6 +44,6 @@ public class LunarLander3DController : OBBHull3D
 
     void AddThrust(float deltaTime, Vector3 offset)
     {
-        AddForceAtPointLocal(new Vector3(0, 0, m_ThrusterForcePerSecond * deltaTime), offset);
+        AddForceAtPointLocal(new Vector3(0, m_ThrusterForcePerSecond * deltaTime, 0), offset);
     }
 }
