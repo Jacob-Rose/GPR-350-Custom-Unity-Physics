@@ -193,7 +193,7 @@ public abstract class CollisionHull3D : Particle3D
             }
         }
         // Which face is in contact?
-        contactPoints[0] = a.m_ObjectToWorldTransform.MultiplyPoint(Vector3.zero);
+        contactPoints[0] = a.m_WorldToObjectTransform.MultiplyPoint(Vector3.zero);
         return new HullCollision3D(a, b, bestPenetration.Value.Key, bestPenetration.Value.Value, contactPoints);
 
     }

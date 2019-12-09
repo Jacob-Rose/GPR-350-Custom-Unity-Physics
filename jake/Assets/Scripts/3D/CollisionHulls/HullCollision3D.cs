@@ -87,8 +87,8 @@ public class HullCollision3D
 
         float inpulse = deltaVelocity / totalInverseMass;
         Vector3 inpulsePerMass = contactNormal * inpulse * newSeperatingVelocity;
-        a.AddForceAtPoint(inpulsePerMass, contactPoint[0]);
-        b.AddForceAtPoint(-inpulsePerMass, contactPoint[0]);
+        a.AddForce(inpulsePerMass);
+        b.AddForce(-inpulsePerMass);
     }
 
     private void ResolveInterPenetration()
