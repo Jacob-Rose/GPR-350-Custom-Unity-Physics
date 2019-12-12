@@ -40,6 +40,11 @@ public class SphereHull3D : CollisionHull3D
         return new Vector2(centerProj - m_Radius, centerProj + m_Radius); //pretty easy
     }
 
+    public override void OnCollision(HullCollision3D coll)
+    {
+        
+    }
+
     private void OnDrawGizmos()
     {
         Vector3 offset = Vector3.zero;

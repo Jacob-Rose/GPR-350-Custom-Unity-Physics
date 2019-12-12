@@ -42,10 +42,18 @@ public class PhysicsWorld3D : MonoBehaviour
                     HullCollision3D collision = mPhysicsObjects[i].DetectCollision(mPhysicsObjects[j]);
                     if (collision != null)
                     {
-                        //collision.a.OnCollision(collision.b); //info is still valid before resolved called
-                        //collision.b.OnCollision(collision.a);
-                        collision.Resolve(Time.fixedDeltaTime);
-                        Debug.Log("3D collision occured");
+                        if(collision.a is LunarLander3DController)
+                        {
+                            (collision.a as LunarLander3DController).m_LastContact = collision;
+                        }
+                        if(collision.b is LunarLander3DController)
+                        {
+                            (collision.b as LunarLander3DController).m_LastContact = collision;
+                        }
+                        if(!(collision.a.m_IsTrigger || collision.b.m_IsTrigger))
+                            collision.a.OnCollision(collision); //info is still valid before resolved called
+                            collision.b.OnCollision(collision);
+                            collision.Resolve(Time.fixedDeltaTime);
                     }
                 }
             }

@@ -40,8 +40,8 @@ public class Particle3D : MonoBehaviour
     protected Matrix4x4 m_InvInertiaLocalSpace;
     protected Matrix4x4 m_InvInertiaWorldSpace;
 
-    protected Matrix4x4 m_ObjectToWorldTransform;
-    protected Matrix4x4 m_WorldToObjectTransform;
+    public Matrix4x4 m_ObjectToWorldTransform { get; private set; }
+    public Matrix4x4 m_WorldToObjectTransform { get; private set; }
 
     public Vector3 centerOfMassLocalSpace = Vector3.zero;
 
@@ -153,8 +153,10 @@ public class Particle3D : MonoBehaviour
 
     public void AddForceAtPoint(Vector3 force, Vector3 point)
     {
-        Vector4 pointInWorld = m_WorldToObjectTransform.MultiplyPoint(point);
-        AddForceAtPointLocal(m_ObjectToWorldTransform.MultiplyPoint(force), new Vector3(pointInWorld.x, pointInWorld.y, pointInWorld.z) + m_Position);
+        Vector3 pointInWorld = m_WorldToObjectTransform.MultiplyPoint(point);
+        Vector3 forceInWorld = m_WorldToObjectTransform.MultiplyPoint(force);
+        AddForceAtPointLocal(forceInWorld, pointInWorld);
+        Debug.DrawRay(pointInWorld, forceInWorld);
     }
 
     public virtual void FixedUpdate()

@@ -108,4 +108,9 @@ public class OBBHull3D : CollisionHull3D
         Gizmos.DrawWireCube(Vector3.zero, m_HalfLength * 2.0f);
         Gizmos.matrix = oldMat;
     }
+
+    public override void OnCollision(HullCollision3D coll)
+    {
+        
+    }
 }

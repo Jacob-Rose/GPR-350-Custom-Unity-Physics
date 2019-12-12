@@ -16,7 +16,7 @@ public class HullCollision3D
     public float penetration;
     public float restitution;
     public Vector3 contactNormal;
-    public List<Vector3> contactPoint = new List<Vector3>();
+    public Vector3[] contactPoints;
     // Start is called before the first frame update
     public HullCollision3D(CollisionHull3D a, CollisionHull3D b, Vector3 contactNormal, float penetration, Vector3[] contactPoint)
     {
@@ -25,7 +25,7 @@ public class HullCollision3D
         restitution = Mathf.Min(a.m_Restitution, b.m_Restitution);
         this.contactNormal = contactNormal;
         this.penetration = penetration;
-        this.contactPoint.AddRange(contactPoint);
+        this.contactPoints = contactPoint;
     }
 
     public void Resolve(float deltaT)
@@ -35,19 +35,10 @@ public class HullCollision3D
 
         ResolveVelocity(deltaT);
         ResolveInterPenetration();
-
     }
 
     public float calculateSeperatingVelocity()
     {
-        /*
-        if(a.m_Velocity.magnitude < b.m_Velocity.magnitude)
-        {
-            CollisionHull3D tmp = a;
-            a = b;
-            b = tmp;
-        }
-        */
         Vector3 relativeVelocity = a.m_Velocity;
         relativeVelocity -= b.m_Velocity;
         float sepVel =  Vector3.Dot(relativeVelocity, contactNormal);
@@ -60,6 +51,11 @@ public class HullCollision3D
         if (seperatingVelocity > 0)
         {
             return; //they are already seperating
+        }
+        float totalInverseMass = a.m_InverseMass + b.m_InverseMass;
+        if (totalInverseMass <= 0)
+        {
+            return; //dont do anything, they cannot move
         }
 
         float newSeperatingVelocity = -seperatingVelocity * restitution;
@@ -79,14 +75,9 @@ public class HullCollision3D
 
         float deltaVelocity = newSeperatingVelocity - seperatingVelocity;
 
-        float totalInverseMass = a.m_InverseMass + b.m_InverseMass;
-        if (totalInverseMass <= 0)
-        {
-            return; //dont do anything, they cannot move
-        }
-
         float inpulse = deltaVelocity / totalInverseMass;
         Vector3 inpulsePerMass = contactNormal * inpulse * newSeperatingVelocity;
+        
         a.AddForce(inpulsePerMass);
         b.AddForce(-inpulsePerMass);
     }

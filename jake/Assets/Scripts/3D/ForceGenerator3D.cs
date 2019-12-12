@@ -18,4 +18,9 @@ public class ForceGenerator3D
     {
         return frictionCoefficient * f_normal.magnitude > f_opposing.magnitude ? -frictionCoefficient * f_normal : -f_opposing;
     }
+
+    public static Vector3 GenerateForce_Friction_Kinetic(Vector3 f_normal, Vector3 particleVelocity, float frictionCoefficient)
+    {
+        return -frictionCoefficient * particleVelocity.magnitude * particleVelocity.normalized;
+    }
 }

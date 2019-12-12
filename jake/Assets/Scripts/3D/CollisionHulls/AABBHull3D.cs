@@ -39,6 +39,19 @@ public class AABBHull3D : CollisionHull3D
         return verts;
     }
 
+    public Vector3 getXNormal()
+    {
+        return Vector3.right;
+    }
+    public Vector3 getYNormal()
+    {
+        return Vector3.up;
+    }
+    public Vector3 getZNormal()
+    {
+        return Vector3.forward;
+    }
+
 
     public override Vector2 getMinMaxProjectionValuesOnNorm(Vector3 norm)
     {
@@ -75,5 +88,10 @@ public class AABBHull3D : CollisionHull3D
             offsetPos = transform.position;
         }
         Gizmos.DrawWireCube(m_Position + offsetPos, m_HalfLength * 2);
+    }
+
+    public override void OnCollision(HullCollision3D coll)
+    {
+        
     }
 }
