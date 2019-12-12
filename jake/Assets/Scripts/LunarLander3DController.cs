@@ -70,15 +70,15 @@ public class LunarLander3DController : OBBHull3D
             if (LunarLanderGameManager.m_Instance != null && m_UpsidedownSinceContact)
             {
                 LunarLanderGameManager.m_Instance.m_Score++;
-                m_UpsidedownSinceContact = false;
             }
         }
         else
         {
+
             LunarLanderGameManager.m_Instance.ResetPlayer();
         }
-
-        
+        m_Fuel = m_StartFuel;
+        m_UpsidedownSinceContact = false;
     }
 
     private void HandleJustCollided(float deltaTime)
@@ -98,7 +98,7 @@ public class LunarLander3DController : OBBHull3D
         }
         m_Torque -= torqueChange * deltaTime;
         m_AngularVelocity *= 1.0f - deltaTime;
-        AddForce(ForceGenerator3D.GenerateForce_Friction_Kinetic(Vector3.up, m_Velocity, 1.7f) * Mass * -m_Gravity * deltaTime);
+        AddForce(ForceGenerator3D.GenerateForce_Friction_Kinetic(Vector3.up, m_Velocity, 0.7f) * Mass * -m_Gravity);
     }
 
     void AddThrust(float deltaTime, Vector3 offset)
