@@ -1,7 +1,7 @@
 # GPR-350-101
 Game Physics Engine Development in C# with Unity
 
-Goal of the project is to create our own physics engine in Unity and to make a game using none of Unity's built in physics scripts.
+Goal of the project is to create our own physics engine in Unity and to make a game using none of Unity's built in physics scripts. Most collisions come with proper gizmos to view the collision bounds!
 
 
 Commit dc6d8db24935d4da0f9140e1e04d55c36ec7f933
