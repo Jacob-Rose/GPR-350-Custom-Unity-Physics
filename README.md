@@ -1,7 +1,9 @@
-# GPR-350-101
+# GPR-350-Custom-Unity-Physics
 Game Physics Engine Development in C# with Unity
 
 Goal of the project is to create our own physics engine in Unity and to make a game using none of Unity's built in physics scripts. Most collisions come with proper gizmos to view the collision bounds!
+
+Code is provided for both in-engine custom code to help people understand the different math equations required for physics. Also includes a DLL and packing system so we could maintain the C++ performance ( this does not have most of the advanced physics work that the C# has)
 
 
 Commit dc6d8db24935d4da0f9140e1e04d55c36ec7f933
